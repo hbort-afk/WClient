@@ -61,7 +61,7 @@ We appreciate the open-source community, testers, and players who help us improv
 
 Have suggestions or found a bug?  
 📩 Contact us: `retrivedgamer@gmail.com`  
-💬 Join our Discord: [discord.gg/wclient]  (https://discord.gg/N2Gejr8Fbp)
+💬 Join our Discord: [discord.gg/wclient](https://discord.gg/N2Gejr8Fbp)
 💰 Support us:  
 - UPI: `prajwalnanotkar09@oksbi`  
 - PayPal: [paypal.me/retrivedgamer](https://paypal.me/retrivedgamer)
