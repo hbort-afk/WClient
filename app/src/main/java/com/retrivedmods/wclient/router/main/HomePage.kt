@@ -420,19 +420,16 @@ private fun IntroductionCard() {
             )
             Text(
                 """
-        - Fixed AdvanceCombatAura
-        - Added Rotation
-        - Added X Strafe
-        - LAN Problem Fixed
-        - Added Crystal Aura
-        - Added EPS (Not Stable)
-        - Added Criticals 
-        - Updated Crasher
-        - Added Blink
-        - Added AutoDisconnect
-        - Added OpFightBot
-        - Added FastStop
-        - Added AdvanceDisabler
+        - Fixed OpFightBot
+        - Added JavaAura
+        - Added PlayerLogs
+        - UI Changed
+        - Added Hitbox
+        - Added Mod Alert
+        - Added InfiniteAura
+        - Lag Fixed
+        - Unknown Crash Fixed
+        - Config Import/Export
         - Use Below 1.21.60
         """.trimIndent(),
                 style = MaterialTheme.typography.bodySmall.copy(

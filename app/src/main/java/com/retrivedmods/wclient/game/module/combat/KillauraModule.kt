@@ -17,7 +17,7 @@ import kotlin.math.sin
 class KillauraModule : Module("killaura", ModuleCategory.Combat) {
 
     private var playersOnly by boolValue("players_only", true)
-    private var mobsOnly by boolValue("mobs_only", true)
+    private var mobsOnly by boolValue("Mobs", false)
     private var tpAuraEnabled by boolValue("tp_aura", true)
     private var strafe by boolValue("strafe", true)
     private var teleportBehind by boolValue("tp_behind", false)

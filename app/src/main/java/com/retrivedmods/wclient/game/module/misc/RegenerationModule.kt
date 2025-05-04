@@ -7,7 +7,7 @@ import com.retrivedmods.wclient.game.data.Effect
 import org.cloudburstmc.protocol.bedrock.packet.MobEffectPacket
 import org.cloudburstmc.protocol.bedrock.packet.PlayerAuthInputPacket
 
-class RegenerationModule : Module("regeneration", ModuleCategory.Misc) {
+class RegenerationModule : Module("Regeneration", ModuleCategory.Misc) {
 
     override fun onDisabled() {
         super.onDisabled()

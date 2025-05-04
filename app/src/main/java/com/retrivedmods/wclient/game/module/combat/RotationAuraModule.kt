@@ -9,10 +9,10 @@ import org.cloudburstmc.math.vector.Vector3f
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
-class RotationAuraModule : Module("RotationAura", ModuleCategory.Combat) {
+class RotationAuraModule : Module("JavaAura", ModuleCategory.Combat) {
 
-    private var attackRange by floatValue("attack_range", 5.0f, 1.0f..10.0f)
-    private var rotationSpeed by floatValue("rotation_speed", 2.0f, 1.0f..5.0f)
+    private var attackRange by floatValue("Range", 5.0f, 1.0f..10.0f)
+    private var rotationSpeed by floatValue("Cooldown", 2.0f, 1.0f..5.0f)
 
     private var lastAttackTime = 0L
     private var attackDelay = 1000L // Milliseconds between attacks (1 second)

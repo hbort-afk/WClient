@@ -12,7 +12,7 @@ import org.cloudburstmc.protocol.bedrock.packet.RequestAbilityPacket
 import org.cloudburstmc.protocol.bedrock.packet.UpdateAbilitiesPacket
 import kotlin.collections.addAll
 
-class NoClipModule : Module("no_clip", ModuleCategory.Misc) {
+class NoClipModule : Module("no_clip", ModuleCategory.Motion) {
 
     private val enableNoClipAbilitiesPacket = UpdateAbilitiesPacket().apply {
         playerPermission = PlayerPermission.OPERATOR

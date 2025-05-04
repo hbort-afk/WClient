@@ -28,9 +28,9 @@ class DamageTextModule : Module("DamageText", ModuleCategory.Visual) {
             if (entity is Player) {
                 val playerName = entity.username  // Assuming `username` exists
 
-                val stateText = "$playerName was damaged!"
-                val status = "§c$stateText"  // You can use colors like §a for green
-                val message = "§l§c[WClient] §8»§r $status"
+                val stateText = "$playerName§r §cEnemy Damaged!"
+                val status = "§f$stateText"  // You can use colors like §a for green
+                val message = " $status"
 
 
                 // Send the formatted damage message to the chat

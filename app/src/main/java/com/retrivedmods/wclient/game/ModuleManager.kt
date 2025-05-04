@@ -9,7 +9,9 @@ import com.retrivedmods.wclient.application.AppContext
 import com.retrivedmods.wclient.game.module.combat.AdvanceCombatAuraModule
 import com.retrivedmods.wclient.game.module.combat.WAuraModule
 import com.retrivedmods.wclient.game.module.combat.AntiCrystalModule
+import com.retrivedmods.wclient.game.module.combat.HitboxModule
 import com.retrivedmods.wclient.game.module.combat.TrollerModule
+import com.retrivedmods.wclient.game.module.combat.InfiniteAuraModule
 import com.retrivedmods.wclient.game.module.combat.AntiKnockbackModule
 import com.retrivedmods.wclient.game.module.combat.AutoclickerModule
 import com.retrivedmods.wclient.game.module.combat.CrystalauraModule
@@ -43,7 +45,9 @@ import com.retrivedmods.wclient.game.module.visual.NoHurtCameraModule
 import com.retrivedmods.wclient.game.module.visual.ZoomModule
 import com.retrivedmods.wclient.game.module.visual.DamageTextModule
 import com.retrivedmods.wclient.game.module.visual.ESPModule
+import com.retrivedmods.wclient.game.module.visual.ModAlertModule
 import com.retrivedmods.wclient.game.module.visual.NightVisionModule
+import com.retrivedmods.wclient.game.module.visual.PlayerJoinNotifierModule
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
@@ -84,6 +88,10 @@ object ModuleManager {
             add(NightVisionModule())
             add(RegenerationModule())
             add(AutoDisconnectModule())
+            add(PlayerJoinNotifierModule())
+            add(HitboxModule())
+            add(InfiniteAuraModule())
+            add(ModAlertModule())
 
             add(HighJumpModule())
 

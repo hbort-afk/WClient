@@ -4,97 +4,79 @@ import com.retrivedmods.wclient.game.InterceptablePacket
 import com.retrivedmods.wclient.game.Module
 import com.retrivedmods.wclient.game.ModuleCategory
 import com.retrivedmods.wclient.game.entity.Entity
-import com.retrivedmods.wclient.game.entity.LocalPlayer
 import org.cloudburstmc.math.vector.Vector3f
 import org.cloudburstmc.protocol.bedrock.packet.MovePlayerPacket
 import org.cloudburstmc.protocol.bedrock.packet.PlayerAuthInputPacket
-import kotlin.math.cos
-import kotlin.math.sin
+import kotlin.math.*
 
 class OpFightBotModule : Module("OpFightBot", ModuleCategory.Motion) {
 
-    private var tpAuraEnabled by boolValue("tp_aura", true)
-    private var teleportBehind by boolValue("TP Behind", false)
-    private var rangeValue by floatValue("range", 7.0f, 2f..10f)
-    private var tpSpeed by intValue("tp_speed", 150, 50..2000)
-    private var tpYLevel by intValue("yOffset", 0, -10..10)
-    private var distanceToKeep by floatValue("keep_distance", 2.0f, 1f..5f)
-    private var tpCooldown = 0L
+    private var radius by floatValue("Radius", 6.0f, 2f..20f)
+    private var yOffsetBase by floatValue("yOffset", 0f, -10f..10f)
+    private var circleSpeed by floatValue("circleSpeed", 2.5f, 0.5f..10f)
+    private var jitterPower by floatValue("jitterPower", 0.15f, 0f..0.5f)
+    private var maxTargetRange by floatValue("targetRange", 25f, 10f..40f)
+
+    private var currentAngle = 0.0
+    private var lastMoveTime = 0L
+    private var jitterState = false
 
     override fun beforePacketBound(interceptablePacket: InterceptablePacket) {
-        if (!isEnabled || !tpAuraEnabled) return
+        if (!isEnabled) return
 
         val packet = interceptablePacket.packet
         if (packet is PlayerAuthInputPacket) {
-            val currentTime = System.currentTimeMillis()
+            val now = System.currentTimeMillis()
+            val delta = now - lastMoveTime
+            if (delta < 35) return // adjust throttle rate for smoother flight
 
-            // Search for closest entities within range
-            val closestEntities = searchForClosestEntities()
-            if (closestEntities.isEmpty()) return
+            val target = findClosestEntity() ?: return
 
-            closestEntities.forEach { entity ->
-                // Teleport to the closest entity if the cooldown is passed
-                if ((currentTime - tpCooldown) >= tpSpeed) {
-                    teleportTo(entity, distanceToKeep, tpYLevel)
-                    tpCooldown = currentTime
-                }
-            }
+            // Speed-based angle update
+            val angleIncrement = circleSpeed * (delta / 1000.0) * 360.0
+            currentAngle = (currentAngle + angleIncrement) % 360.0
+
+            movePlayerInCircle(target, currentAngle, radius.toDouble(), yOffsetBase)
+            lastMoveTime = now
+
+            // Flip jitter state every tick group
+            jitterState = !jitterState
         }
     }
 
-    private fun teleportTo(entity: Entity, distance: Float, yOffset: Int) {
-        val targetPosition = entity.vec3Position
-        val playerPosition = session.localPlayer.vec3Position
+    private fun movePlayerInCircle(target: Entity, angleDeg: Double, radius: Double, yOffsetBase: Float) {
+        val rad = Math.toRadians(angleDeg)
+        val offsetX = cos(rad) * radius
+        val offsetZ = sin(rad) * radius
 
-        // Calculate direction using sin and cos without converting to radians manually
-        val targetYaw = entity.vec3Rotation.y.toFloat()  // Angle in degrees
-        val direction = Vector3f.from(
-            sin(Math.toRadians(targetYaw.toDouble())).toFloat(),  // Convert to radians and then calculate sin
-            0f,
-            -cos(Math.toRadians(targetYaw.toDouble())).toFloat()  // Convert to radians and then calculate cos
+        // Add jitter to bypass anti-cheat (Lifeboat-safe)
+        val jitterY = if (jitterState) yOffsetBase else -yOffsetBase
+        val randJitterX = (Math.random().toFloat() - 0.5f) * jitterPower
+        val randJitterZ = (Math.random().toFloat() - 0.5f) * jitterPower
+
+        val newPos = Vector3f.from(
+            (target.vec3Position.x + offsetX + randJitterX).toFloat(),
+            (target.vec3Position.y + jitterY).toFloat(),
+            (target.vec3Position.z + offsetZ + randJitterZ).toFloat()
         )
-        val length = direction.length()
-        val normalizedDirection = if (length != 0f) Vector3f.from(direction.x / length, 0f, direction.z / length) else direction
 
-        // Handle teleportation direction based on whether we want to teleport behind or not
-        val newPosition = if (teleportBehind) {
-            Vector3f.from(
-                targetPosition.x + normalizedDirection.x * distance,
-                targetPosition.y + yOffset,
-                targetPosition.z + normalizedDirection.z * distance
-            )
-        } else {
-            Vector3f.from(
-                targetPosition.x - normalizedDirection.x * distance,
-                targetPosition.y + yOffset,
-                targetPosition.z - normalizedDirection.z * distance
-            )
-        }
-
-        // Send the movement packet to teleport the player
-        val movePlayerPacket = MovePlayerPacket().apply {
+        val movePacket = MovePlayerPacket().apply {
             runtimeEntityId = session.localPlayer.runtimeEntityId
-            position = newPosition
-            rotation = entity.vec3Rotation
+            position = newPos
+            rotation = session.localPlayer.vec3Rotation
             mode = MovePlayerPacket.Mode.NORMAL
             isOnGround = false
             ridingRuntimeEntityId = 0
             tick = session.localPlayer.tickExists
         }
 
-        session.clientBound(movePlayerPacket)
+        session.clientBound(movePacket)
     }
 
-    private fun searchForClosestEntities(): List<Entity> {
+    private fun findClosestEntity(): Entity? {
         return session.level.entityMap.values
-            .filter { it.distance(session.localPlayer) < rangeValue && it.isTarget() }
-            .sortedBy { it.distance(session.localPlayer) } // Sort by closest
-    }
-
-    private fun Entity.isTarget(): Boolean {
-        return when (this) {
-            is LocalPlayer -> false
-            else -> true // Any entity can be targeted now
-        }
+            .filter { it != session.localPlayer }
+            .filter { it.distance(session.localPlayer) <= maxTargetRange }
+            .minByOrNull { it.distance(session.localPlayer) }
     }
 }
