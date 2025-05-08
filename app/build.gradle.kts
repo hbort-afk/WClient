@@ -17,8 +17,8 @@ android {
         minSdk = 28
         //noinspection EditedTargetSdkVersion
         targetSdk = 35
-        versionCode = 4
-        versionName = "4.0"
+        versionCode = 5
+        versionName = "5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -123,11 +123,12 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
+    implementation(platform(libs.androidx.compose.bom)) // 👈 this sets the Compose version
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation("androidx.compose.material:material") // ✅ Needed for Text()
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material.icons.extended)
     testImplementation(libs.junit)

@@ -28,7 +28,7 @@ class DamageTextModule : Module("DamageText", ModuleCategory.Visual) {
             if (entity is Player) {
                 val playerName = entity.username  // Assuming `username` exists
 
-                val stateText = "$playerName§r §cEnemy Damaged!"
+                val stateText = "$playerName§r §cEnemy Damaged"
                 val status = "§f$stateText"  // You can use colors like §a for green
                 val message = " $status"
 

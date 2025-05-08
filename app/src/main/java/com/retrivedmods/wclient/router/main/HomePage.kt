@@ -421,15 +421,15 @@ private fun IntroductionCard() {
             Text(
                 """
         - Fixed OpFightBot
-        - Added JavaAura
-        - Added PlayerLogs
-        - UI Changed
-        - Added Hitbox
-        - Added Mod Alert
-        - Added InfiniteAura
+        - Added ChatSuffix
+        - Added EnemyHunter
+        - Added Watermark
+        - Fixed InfiniteAura
+        - Fixed AdvanceDisabler
+        - Fixed ModAlert
         - Lag Fixed
-        - Unknown Crash Fixed
-        - Config Import/Export
+        - Improved DamageText
+        - Fixed Player Logs
         - Use Below 1.21.60
         """.trimIndent(),
                 style = MaterialTheme.typography.bodySmall.copy(

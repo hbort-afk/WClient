@@ -8,39 +8,35 @@ import org.cloudburstmc.protocol.bedrock.packet.RemoveEntityPacket
 
 class PlayerJoinNotifierModule : Module("Player Logs", ModuleCategory.Visual) {
 
-
-    // Map of entity ID to username
     private val trackedPlayers = mutableMapOf<Long, String>()
 
     override fun beforePacketBound(interceptablePacket: InterceptablePacket) {
+        if (!isEnabled) return
+
         val packet = interceptablePacket.packet
 
         when (packet) {
             is AddPlayerPacket -> {
-                if (isEnabled && packet.uniqueEntityId != session.localPlayer.uniqueEntityId) {
-                    val username = packet.username
-                    if (trackedPlayers.put(packet.uniqueEntityId, username) == null) {
-                        session.displayClientMessage("§a[+] §f$username §ajoined")
-                    }
+                val username = packet.username
+                if (
+                    packet.uniqueEntityId != session.localPlayer.uniqueEntityId &&
+                    username.isNotBlank() &&
+                    trackedPlayers.put(packet.uniqueEntityId, username) == null
+                ) {
+                    session.displayClientMessage("§a[+] §f$username §ajoined")
                 }
             }
 
             is RemoveEntityPacket -> {
-                if (isEnabled) {
-                    val username = trackedPlayers.remove(packet.uniqueEntityId)
-                    if (username != null) {
-                        session.displayClientMessage("§c[-] §f$username §cleft")
-                    } else {
-                        session.displayClientMessage("§c[-] §fA player §cleft")
-                    }
+                val username = trackedPlayers.remove(packet.uniqueEntityId)
+                if (!username.isNullOrBlank()) {
+                    session.displayClientMessage("§c[-] §f$username §cleft")
                 }
             }
         }
     }
 
-    fun onDisable() {
+   fun onDisable() {
         trackedPlayers.clear()
     }
-
-
 }

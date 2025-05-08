@@ -10,52 +10,92 @@ import kotlin.random.Random
 class AdvanceDisablerModule : Module("AdvancedDisabler", ModuleCategory.Misc) {
 
     private val lifeboatBypass by boolValue("Lifeboat Bypass", true)
+    private val hiveBypass by boolValue("Hive Bypass", true)
+    private val cubecraftBypass by boolValue("Cubecraft Bypass", true)
+
     private val spoofTeleportLag by boolValue("TP Lag Spoof", true)
     private val packetFlood by boolValue("Packet Flood", false)
     private val floodRate by intValue("Flood Rate", 5, 1..20)
 
+    private val antiKick by boolValue("Anti Kick", true)
+    private val blinkPackets by boolValue("Blink Mode", false)
+
     private var packetCounter = 0
+    private var blinkBuffer = mutableListOf<PlayerAuthInputPacket>()
 
     override fun beforePacketBound(interceptablePacket: InterceptablePacket) {
         val packet = interceptablePacket.packet
 
-        // Lifeboat-specific spoofing
-        if (lifeboatBypass && packet is MovePlayerPacket) {
-            if (Random.nextInt(3) == 0) {
-                packet.isOnGround = true
-                packet.position = packet.position.add(0f, 0.015f, 0f) // subtle y-offset
+        if (packet is MovePlayerPacket) {
+            // Subtle Y desync for all servers
+            if (lifeboatBypass || hiveBypass || cubecraftBypass) {
+                if (Random.nextInt(4) == 0) {
+                    packet.isOnGround = true
+                    packet.position = packet.position.add(0f, 0.015f + Random.nextFloat() * 0.01f, 0f)
+                }
             }
-        }
 
-        // TP Lag spoof
-        if (spoofTeleportLag && packet is MovePlayerPacket) {
-            if (Random.nextBoolean()) {
+            // Spoof teleportation state
+            if (spoofTeleportLag && Random.nextInt(3) == 0) {
                 try {
                     val field = packet.javaClass.getDeclaredField("teleportationCause")
                     field.isAccessible = true
-                    field.set(packet, 0) // UNKNOWN cause
-                } catch (e: Exception) {
-                    // Ignore if not supported
+                    field.set(packet, 0)
+                } catch (_: Exception) {
                 }
+            }
+
+            // Anti-kick vertical bounce
+            if (antiKick && packet.position.y <= 0.5f) {
+                packet.position = packet.position.add(0f, 1.5f + Random.nextFloat(), 0f)
+                packet.isOnGround = true
             }
         }
 
-        // Packet flood logic
-        if (packetFlood && packet is PlayerAuthInputPacket) {
-            packetCounter++
-            if (packetCounter >= floodRate) {
-                packetCounter = 0
-                for (i in 0 until 3) {
-                    val spoof = PlayerAuthInputPacket().apply {
-                        position = packet.position
-                        delta = packet.delta
-                        inputMode = packet.inputMode
-                        tick = packet.tick + Random.nextInt(1, 5)
+        if (packet is PlayerAuthInputPacket) {
+            // Blink packet storage
+            if (blinkPackets) {
+                blinkBuffer.add(packet)
+                if (blinkBuffer.size >= 10 + Random.nextInt(5)) {
+                    blinkBuffer.forEach { spoof ->
+                        session.clientBound(spoof)
                     }
-                    // Send spoofed packet via session.clientBound() method
-                    session.clientBound(spoof)
+                    blinkBuffer.clear()
+                }
+                return // Cancel sending now
+            }
+
+            // Packet flood spoofing
+            if (packetFlood) {
+                packetCounter++
+                if (packetCounter >= floodRate) {
+                    packetCounter = 0
+                    repeat(3) {
+                        val spoof = PlayerAuthInputPacket().apply {
+                            position = packet.position
+                            delta = packet.delta
+                            inputMode = packet.inputMode
+                            tick = packet.tick + Random.nextInt(1, 6)
+                        }
+                        session.clientBound(spoof)
+                    }
                 }
             }
+
+            // Minor desync to confuse server heuristics
+            if (Random.nextBoolean()) {
+                packet.delta = packet.delta.add(0.001f * (Random.nextFloat() - 0.5f),
+                    0f,
+                    0.001f * (Random.nextFloat() - 0.5f))
+            }
         }
+    }
+
+     fun onDisable() {
+        // Flush blink buffer on disable
+        blinkBuffer.forEach {
+            session.clientBound(it)
+        }
+        blinkBuffer.clear()
     }
 }

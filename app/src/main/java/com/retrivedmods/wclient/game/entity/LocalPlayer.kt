@@ -48,8 +48,8 @@ class LocalPlayer(val session: GameSession) : Player(0L, 0L, UUID.randomUUID(), 
     var openContainer: AbstractInventory? = null
         private set
 
-    // Add health property here
-    var health: Float = 100f // Default health is 100
+    // Overridden health property
+    override var health: Float = 100f // Default health is 100
 
     override fun onPacketBound(packet: BedrockPacket) {
         super.onPacketBound(packet)

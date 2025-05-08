@@ -1,4 +1,4 @@
-package com.retrivedmods.wclient.game.module.visual
+package com.retrivedmods.wclient.game.module.misc
 
 import com.retrivedmods.wclient.game.InterceptablePacket
 import com.retrivedmods.wclient.game.Module
@@ -8,46 +8,55 @@ import org.cloudburstmc.protocol.bedrock.packet.RemoveEntityPacket
 
 class ModAlertModule : Module("Mod Alert", ModuleCategory.Visual) {
 
-    // Track entity ID to username
     private val trackedPlayers = mutableMapOf<Long, String>()
 
     override fun beforePacketBound(interceptablePacket: InterceptablePacket) {
+        if (!isEnabled) return
+
         val packet = interceptablePacket.packet
 
         when (packet) {
             is AddPlayerPacket -> {
-                if (isEnabled && packet.uniqueEntityId != session.localPlayer.uniqueEntityId) {
+                if (packet.uniqueEntityId != session.localPlayer.uniqueEntityId) {
                     val username = packet.username
 
-                    if (trackedPlayers.put(packet.uniqueEntityId, username) == null) {
-                        session.displayClientMessage("§a[+] §f$username §ajoined")
+                    if (username.isNotBlank() && trackedPlayers.put(packet.uniqueEntityId, username) == null) {
+                        when {
+                            isMod(username) -> {
+                                session.displayClientMessage("§c[!] §aMOD ALERT: §f$username §ahas joined the server!")
+                                session.displayClientMessage("§e[!] Disable hacks immediately to avoid bans.")
+                            }
 
-                        // Check for Lifeboat Mod rank prefix
-                        if (isMod(username)) {
-                            session.displayClientMessage("§c[!] §4MOD ALERT: §f$username §chas joined the server!")
-                            session.displayClientMessage("§e[!] Disable hacks immediately to avoid bans.")
+                            isVip(username) -> {
+                                session.displayClientMessage("§d[!] §6VIP ALERT: §f$username §dhas joined the server!")
+                            }
                         }
                     }
                 }
             }
 
             is RemoveEntityPacket -> {
-                if (isEnabled) {
-                    val username = trackedPlayers.remove(packet.uniqueEntityId)
-                    if (username != null) {
-                        session.displayClientMessage("§c[-] §f$username §cleft")
-                    }
-                }
+                trackedPlayers.remove(packet.uniqueEntityId)
             }
         }
     }
 
     private fun isMod(username: String): Boolean {
-        // Lifeboat uses §6[Mod] prefix or §6Mod username formats
-        return username.contains("§6Mod") || username.contains("§6[Mod]")
+        // Green-colored mod tags or names like §a[Mod] or §aMod
+        return username.contains("§aMod", ignoreCase = true) ||
+                username.contains("§2Mod", ignoreCase = true) ||
+                username.contains("[Mod]", ignoreCase = true)
     }
 
-    fun onDisable() {
+    private fun isVip(username: String): Boolean {
+        // Yellow or purple-colored VIP tags like §eVIP or §dVIP
+        return username.contains("§eVIP", ignoreCase = true) ||
+                username.contains("§dVIP", ignoreCase = true) ||
+                username.contains("§5VIP", ignoreCase = true) ||
+                username.contains("[VIP]", ignoreCase = true)
+    }
+
+     fun onDisable() {
         trackedPlayers.clear()
     }
 }

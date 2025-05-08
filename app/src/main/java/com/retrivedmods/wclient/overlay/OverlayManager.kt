@@ -1,3 +1,4 @@
+
 package com.retrivedmods.wclient.overlay
 
 import android.annotation.SuppressLint
@@ -13,6 +14,7 @@ import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.retrivedmods.wclient.game.ModuleManager
 import com.retrivedmods.wclient.ui.theme.MuCuteClientTheme
+import com.retrivedmods.wclient.overlay.WatermarkOverlay
 import kotlinx.coroutines.launch
 
 @SuppressLint("StaticFieldLeak")
@@ -30,6 +32,7 @@ object OverlayManager {
     init {
         with(overlayWindows) {
             add(OverlayButton())
+            add(WatermarkOverlay())
             addAll(
                 ModuleManager
                     .modules
@@ -163,5 +166,5 @@ object OverlayManager {
             }
         }
 
-}
+    }
 }

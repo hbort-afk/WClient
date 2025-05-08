@@ -15,6 +15,7 @@ import com.retrivedmods.wclient.game.module.combat.InfiniteAuraModule
 import com.retrivedmods.wclient.game.module.combat.AntiKnockbackModule
 import com.retrivedmods.wclient.game.module.combat.AutoclickerModule
 import com.retrivedmods.wclient.game.module.combat.CrystalauraModule
+import com.retrivedmods.wclient.game.module.combat.EnemyHunterModule
 import com.retrivedmods.wclient.game.module.combat.KillauraModule
 import com.retrivedmods.wclient.game.module.combat.RotationAuraModule
 import com.retrivedmods.wclient.game.module.misc.AdvanceDisablerModule
@@ -25,6 +26,7 @@ import com.retrivedmods.wclient.game.module.misc.PlayerTracerModule
 import com.retrivedmods.wclient.game.module.misc.PositionLoggerModule
 import com.retrivedmods.wclient.game.module.misc.TimeShiftModule
 import com.retrivedmods.wclient.game.module.misc.BlinkModule
+import com.retrivedmods.wclient.game.module.misc.ChatSuffixModule
 import com.retrivedmods.wclient.game.module.misc.RegenerationModule
 import com.retrivedmods.wclient.game.module.misc.WeatherControllerModule
 import com.retrivedmods.wclient.game.module.motion.AirJumpModule
@@ -45,7 +47,7 @@ import com.retrivedmods.wclient.game.module.visual.NoHurtCameraModule
 import com.retrivedmods.wclient.game.module.visual.ZoomModule
 import com.retrivedmods.wclient.game.module.visual.DamageTextModule
 import com.retrivedmods.wclient.game.module.visual.ESPModule
-import com.retrivedmods.wclient.game.module.visual.ModAlertModule
+import com.retrivedmods.wclient.game.module.misc.ModAlertModule
 import com.retrivedmods.wclient.game.module.visual.NightVisionModule
 import com.retrivedmods.wclient.game.module.visual.PlayerJoinNotifierModule
 import kotlinx.serialization.json.Json
@@ -92,6 +94,8 @@ object ModuleManager {
             add(HitboxModule())
             add(InfiniteAuraModule())
             add(ModAlertModule())
+            add(EnemyHunterModule())
+            add(ChatSuffixModule())
 
             add(HighJumpModule())
 

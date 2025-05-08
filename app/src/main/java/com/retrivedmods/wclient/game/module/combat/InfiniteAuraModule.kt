@@ -8,33 +8,35 @@ import org.cloudburstmc.protocol.bedrock.packet.PlayerAuthInputPacket
 
 class InfiniteAuraModule : Module("InfiniteAura", ModuleCategory.Combat) {
 
-    private var playersOnly by boolValue("players_only", true)
-    private var mobsOnly by boolValue("Mobs", false)
-
-    private var cpsValue by intValue("cps", 50, 1..100) // Max CPS
-    private var burst by intValue("Burst Packets", 5, 1..20) // Multihit per tick
+    private var playersOnly by boolValue("Players Only", true)
+    private var mobsOnly by boolValue("Mobs Only", false)
+    private var cpsValue by intValue("CPS", 25, 1..100) // Lowered for better stealth
+    private var burst by intValue("Burst Packets", 3, 1..10) // Reasonable multi-hit
 
     private var lastAttackTime = 0L
+    private val entityCooldowns = mutableMapOf<Long, Long>()
 
     override fun beforePacketBound(interceptablePacket: InterceptablePacket) {
         if (!isEnabled) return
-
         val packet = interceptablePacket.packet
-        if (packet is PlayerAuthInputPacket) {
-            val now = System.nanoTime()
-            val minDelay = 1_000_000_000L / cpsValue
+        if (packet !is PlayerAuthInputPacket) return
 
-            if ((now - lastAttackTime) >= minDelay) {
-                val targets = getAllTargets()
+        val now = System.nanoTime()
+        val minDelay = 1_000_000_000L / cpsValue
 
-                for (entity in targets) {
-                    repeat(burst) {
-                        session.localPlayer.attack(entity)
-                    }
+        if ((now - lastAttackTime) >= minDelay) {
+            val targets = getAllTargets()
+            for (target in targets) {
+                val runtimeId = target.runtimeEntityId
+                val lastHit = entityCooldowns[runtimeId] ?: 0L
+                if ((now - lastHit) < minDelay) continue
+
+                repeat(burst) {
+                    session.localPlayer.attack(target)
                 }
-
-                lastAttackTime = now
+                entityCooldowns[runtimeId] = now
             }
+            lastAttackTime = now
         }
     }
 
@@ -47,9 +49,7 @@ class InfiniteAuraModule : Module("InfiniteAura", ModuleCategory.Combat) {
     private fun Entity.isTarget(): Boolean {
         return when (this) {
             is LocalPlayer -> false
-            is Player -> {
-                if (mobsOnly) false else !this.isBot()
-            }
+            is Player -> if (mobsOnly) false else !this.isBot()
             is EntityUnknown -> {
                 if (mobsOnly) this.identifier in MobList.mobTypes
                 else if (playersOnly) false
