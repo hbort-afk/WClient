@@ -30,7 +30,7 @@ class PlayerInventory(private val player: LocalPlayer) : EntityInventory(player)
     override val content = Array(41) { ItemData.AIR }
 
     var heldItemSlot = 0
-        private set
+        internal set
 
     private var requestId = -1
     private val requestIdMap = mutableMapOf<Int, Int>()
@@ -41,6 +41,8 @@ class PlayerInventory(private val player: LocalPlayer) : EntityInventory(player)
             requestId -= 2
         }
     }
+
+
 
     override fun onPacketBound(packet: BedrockPacket) {
         super.onPacketBound(packet)
@@ -283,6 +285,8 @@ class PlayerInventory(private val player: LocalPlayer) : EntityInventory(player)
         set(value) {
             content[39] = value
         }
+
+
 
     companion object {
         const val SLOT_HELMET = 36

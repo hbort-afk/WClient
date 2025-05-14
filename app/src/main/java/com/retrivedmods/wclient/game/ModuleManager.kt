@@ -18,6 +18,7 @@ import com.retrivedmods.wclient.game.module.combat.CrystalauraModule
 import com.retrivedmods.wclient.game.module.combat.EnemyHunterModule
 import com.retrivedmods.wclient.game.module.combat.KillauraModule
 import com.retrivedmods.wclient.game.module.combat.RotationAuraModule
+import com.retrivedmods.wclient.game.module.combat.SlotSwitcherModule
 import com.retrivedmods.wclient.game.module.misc.AdvanceDisablerModule
 import com.retrivedmods.wclient.game.module.misc.AutoDisconnectModule
 import com.retrivedmods.wclient.game.module.misc.DesyncModule
@@ -48,7 +49,11 @@ import com.retrivedmods.wclient.game.module.visual.ZoomModule
 import com.retrivedmods.wclient.game.module.visual.DamageTextModule
 import com.retrivedmods.wclient.game.module.visual.ESPModule
 import com.retrivedmods.wclient.game.module.misc.ModAlertModule
+import com.retrivedmods.wclient.game.module.misc.SpammerModule
+import com.retrivedmods.wclient.game.module.motion.AutoPathModule
+import com.retrivedmods.wclient.game.module.motion.TPContainerModule
 import com.retrivedmods.wclient.game.module.visual.NightVisionModule
+import com.retrivedmods.wclient.game.module.visual.FakeProxyModule
 import com.retrivedmods.wclient.game.module.visual.PlayerJoinNotifierModule
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -96,6 +101,11 @@ object ModuleManager {
             add(ModAlertModule())
             add(EnemyHunterModule())
             add(ChatSuffixModule())
+            add(FakeProxyModule())
+            add(SpammerModule())
+            add(AutoPathModule())
+            add(SlotSwitcherModule())
+            add(TPContainerModule())
 
             add(HighJumpModule())
 

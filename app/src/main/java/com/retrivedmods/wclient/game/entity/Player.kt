@@ -13,7 +13,7 @@ open class Player(
     uniqueEntityId: Long,
     open val uuid: UUID,
     open val username: String
-) : Entity(runtimeEntityId, uniqueEntityId) {
+) : Entity(uniqueEntityId) {
 
     // Health property with `open` modifier to allow subclassing
     open var health: Float = 20.0f // Default to 20 (full health in Minecraft)

@@ -16,11 +16,12 @@ import kotlin.math.sin
 
 class KillauraModule : Module("killaura", ModuleCategory.Combat) {
 
+
     private var playersOnly by boolValue("players_only", true)
     private var mobsOnly by boolValue("Mobs", false)
     private var tpAuraEnabled by boolValue("tp_aura", true)
     private var strafe by boolValue("strafe", true)
-    private var teleportBehind by boolValue("tp_behind", false)
+    private var teleportBehind by boolValue("TP Behind", false)
     private var criticalHits by boolValue("Critical Hit", true)
 
     private var rangeValue by floatValue("range", 7.0f, 2f..10f)
@@ -196,4 +197,6 @@ class KillauraModule : Module("killaura", ModuleCategory.Combat) {
             .filter { it.distance(session.localPlayer) < rangeValue && it.isTarget() }
             .sortedBy { it.distance(session.localPlayer) } // Sort by closest
     }
+
+
 }

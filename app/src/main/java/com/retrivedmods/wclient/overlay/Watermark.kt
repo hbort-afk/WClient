@@ -42,7 +42,7 @@ fun Watermark() {
 
     // Base64 strings
     val base64Client = "V0NsaWVudA=="
-    val base64Version = "djUuMA=="
+    val base64Version = "djYuMA=="
 
     val clientName = String(Base64.decode(base64Client, Base64.DEFAULT))
     val versionText = String(Base64.decode(base64Version, Base64.DEFAULT))

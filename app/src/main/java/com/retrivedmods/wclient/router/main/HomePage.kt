@@ -420,16 +420,17 @@ private fun IntroductionCard() {
             )
             Text(
                 """
-        - Fixed OpFightBot
-        - Added ChatSuffix
-        - Added EnemyHunter
-        - Added Watermark
-        - Fixed InfiniteAura
-        - Fixed AdvanceDisabler
+        - Added SlotSwitcher
+        - Fixed Killaura
+        - Fixed AutoDisconnect
+        - Fixed ChatSuffix
         - Fixed ModAlert
-        - Lag Fixed
-        - Improved DamageText
-        - Fixed Player Logs
+        - Added ChatSpammer
+        - Added PlayerTP
+        - Added TP Container
+        - Added FakeProxy
+        - Fixed FreeCam
+        - Fixed PlayerLogs
         - Use Below 1.21.60
         """.trimIndent(),
                 style = MaterialTheme.typography.bodySmall.copy(
