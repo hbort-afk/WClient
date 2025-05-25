@@ -15,11 +15,11 @@ class AntiKnockbackModule : Module("anti_knockback", ModuleCategory.Combat) {
 
         val packet = interceptablePacket.packet
         if (packet is SetEntityMotionPacket) {
-            // Reset horizontal motion to prevent knockback
+
             packet.motion = Vector3f.from(
-                0f,  // Reset horizontal motion
-                packet.motion.y,  // Maintain vertical motion
-                0f   // Reset horizontal motion
+                0f,
+                packet.motion.y,
+                0f
             )
         }
     }

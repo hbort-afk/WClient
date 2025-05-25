@@ -1,11 +1,9 @@
 package com.retrivedmods.wclient.router.main
 
 import android.Manifest
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.provider.OpenableColumns
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -34,16 +32,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.rounded.AddPhotoAlternate
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.Insights
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Plumbing
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material.icons.rounded.Star
-import androidx.compose.material.icons.rounded.Stop
-import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material.icons.rounded.Whatshot
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BasicAlertDialog
@@ -51,7 +42,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -91,9 +81,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-
-
-import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -106,7 +93,6 @@ import com.retrivedmods.wclient.util.MinecraftUtils
 import com.retrivedmods.wclient.util.SnackbarHostStateScope
 import com.retrivedmods.wclient.viewmodel.MainScreenViewModel
 import kotlinx.coroutines.launch
-import java.io.File
 import java.net.Inet4Address
 import java.net.NetworkInterface
 
@@ -276,7 +262,7 @@ fun HomePageContent() {
                             )
                         } else {
                             Icon(
-                            Icons.Rounded.Pause,
+                                Icons.Rounded.Pause,
                                 contentDescription = null
                             )
                         }
@@ -285,64 +271,64 @@ fun HomePageContent() {
             }
         }
 
-if (showConnectionDialog) {
-    val ipAddress = remember {
-        runCatching {
-            NetworkInterface.getNetworkInterfaces().asSequence()
-                .flatMap { it.inetAddresses.asSequence() }
-                .filterIsInstance<Inet4Address>()
-                .firstOrNull { !it.isLoopbackAddress }
-                ?.hostAddress
-        }.getOrNull() ?: "127.0.0.1"
-    }
+        if (showConnectionDialog) {
+            val ipAddress = remember {
+                runCatching {
+                    NetworkInterface.getNetworkInterfaces().asSequence()
+                        .flatMap { it.inetAddresses.asSequence() }
+                        .filterIsInstance<Inet4Address>()
+                        .firstOrNull { !it.isLoopbackAddress }
+                        ?.hostAddress
+                }.getOrNull() ?: "127.0.0.1"
+            }
 
-    AlertDialog(
-        onDismissRequest = { showConnectionDialog = false },
-        title = {
-            Text(
-                "How to Connect",
-                style = MaterialTheme.typography.titleLarge
+            AlertDialog(
+                onDismissRequest = { showConnectionDialog = false },
+                title = {
+                    Text(
+                        "How to Connect",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                text = {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text("To join, go to Minecraft's Friends tab and join through LAN. If LAN doesn't show up, you can add a new server in the Servers tab by entering the IP address and port provided below, then press Play.")
+
+                        Text(
+                            "IP Address:",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                        Text(
+                            ipAddress,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+
+                        Text(
+                            "Port:",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                        Text(
+                            "19132",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = { showConnectionDialog = false }
+                    ) {
+                        Text("OK")
+                    }
+                }
             )
-        },
-        text = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text("To join, go to Minecraft's Friends tab and join through LAN. If LAN doesn't show up, you can add a new server in the Servers tab by entering the IP address and port provided below, then press Play.")
-
-                Text(
-                    "IP Address:",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-                Text(
-                    ipAddress,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-
-                Text(
-                    "Port:",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-                Text(
-                    "19132",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = { showConnectionDialog = false }
-            ) {
-                Text("OK")
-            }
         }
-    )
-}
-}
+    }
 }
 
 
@@ -420,17 +406,22 @@ private fun IntroductionCard() {
             )
             Text(
                 """
-        - Added SlotSwitcher
-        - Fixed Killaura
-        - Fixed AutoDisconnect
-        - Fixed ChatSuffix
-        - Fixed ModAlert
-        - Added ChatSpammer
-        - Added PlayerTP
-        - Added TP Container
-        - Added FakeProxy
-        - Fixed FreeCam
-        - Fixed PlayerLogs
+        - Added Criticals
+        - Added Tutorials
+        - Added Reach
+        - Added SmartAura
+        - Fixed JavaAura
+        - Improved EnemyHunter
+        - Improved OpFightBot
+        - Improved PlayerTP
+        - Added FastBreak
+        - Added FastEat
+        - Added Jesus
+        - Improved InfiniteAura
+        - Added FakeLag
+        - Simplified Categories
+        - Fixed Crash
+        - Optimized Client
         - Use Below 1.21.60
         """.trimIndent(),
                 style = MaterialTheme.typography.bodySmall.copy(

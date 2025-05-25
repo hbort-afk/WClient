@@ -20,7 +20,7 @@ import kotlin.math.sqrt
 @Suppress("MemberVisibilityCanBePrivate")
 open class Entity(open val uniqueEntityId: Long) {
 
-    // Unique runtime ID for this specific entity
+
     open val runtimeEntityId: Long = uniqueEntityId
 
     open var posX = 0f

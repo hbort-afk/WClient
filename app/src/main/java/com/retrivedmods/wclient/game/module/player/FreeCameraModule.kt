@@ -1,4 +1,4 @@
-package com.retrivedmods.wclient.game.module.visual
+package com.retrivedmods.wclient.game.module.player
 
 import com.retrivedmods.wclient.game.InterceptablePacket
 import com.retrivedmods.wclient.game.Module
@@ -10,15 +10,16 @@ import kotlinx.coroutines.launch
 import org.cloudburstmc.math.vector.Vector3f
 import org.cloudburstmc.protocol.bedrock.data.Ability
 import org.cloudburstmc.protocol.bedrock.data.AbilityLayer
+import org.cloudburstmc.protocol.bedrock.data.PlayerAuthInputData
 import org.cloudburstmc.protocol.bedrock.data.PlayerPermission
 import org.cloudburstmc.protocol.bedrock.data.command.CommandPermission
 import org.cloudburstmc.protocol.bedrock.packet.PlayerAuthInputPacket
-import org.cloudburstmc.protocol.bedrock.packet.TextPacket
-import org.cloudburstmc.protocol.bedrock.data.PlayerAuthInputData
 import org.cloudburstmc.protocol.bedrock.packet.SetEntityMotionPacket
+import org.cloudburstmc.protocol.bedrock.packet.TextPacket
 import org.cloudburstmc.protocol.bedrock.packet.UpdateAbilitiesPacket
+import kotlin.collections.addAll
 
-class FreeCameraModule : Module("free_camera", ModuleCategory.Visual) {
+class FreeCameraModule : Module("free_camera", ModuleCategory.Player) {
 
     private var originalPosition: Vector3f? = null
     private val flySpeed by floatValue("speed", 0.15f, 0.1f..1.5f) // Add configurable speed

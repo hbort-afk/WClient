@@ -1,4 +1,4 @@
-package com.retrivedmods.wclient.game.module.misc
+package com.retrivedmods.wclient.game.module.world
 
 import com.retrivedmods.wclient.game.InterceptablePacket
 import com.retrivedmods.wclient.game.Module
@@ -8,7 +8,7 @@ import org.cloudburstmc.protocol.bedrock.data.LevelEvent
 import org.cloudburstmc.protocol.bedrock.packet.LevelEventPacket
 import org.cloudburstmc.protocol.bedrock.packet.PlayerAuthInputPacket
 
-class WeatherControllerModule : Module("weather_controller", ModuleCategory.Misc) {
+class WeatherControllerModule : Module("weather_controller", ModuleCategory.World) {
 
     private var clear by boolValue("clear", true)
     private var rain by boolValue("rain", false)

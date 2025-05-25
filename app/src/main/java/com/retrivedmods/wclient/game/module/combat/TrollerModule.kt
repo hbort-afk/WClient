@@ -71,7 +71,7 @@ class TrollerModule : Module("Troller", ModuleCategory.Combat) {
     }
 
     private fun prioritizeTarget(entities: List<Entity>): Entity {
-        // Example smart targeting logic: prioritize players over other entities
+
         return entities.sortedByDescending { it is Player }.first()
     }
 
@@ -99,12 +99,12 @@ class TrollerModule : Module("Troller", ModuleCategory.Combat) {
         fun recordHit(target: Entity) {
             hits++
             damageDealt += calculateDamage(target)
-            // Add logic to display or log statistics if necessary
+
         }
 
         private fun calculateDamage(target: Entity): Float {
-            // Implement damage calculation logic
-            return 10f // Example fixed damage value
+
+            return 10f
         }
     }
 }

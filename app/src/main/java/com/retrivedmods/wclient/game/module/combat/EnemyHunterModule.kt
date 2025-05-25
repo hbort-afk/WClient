@@ -15,7 +15,7 @@ class EnemyHunterModule : Module("EnemyHunter", ModuleCategory.Combat) {
     private var baseSpeed by floatValue("Speed", 1.5f, 0.5f..20.0f)
     private var jitterPower by floatValue("Jitter", 0.1f, 0f..0.5f)
     private var strafeRadius by floatValue("Radius", 2f, 0f..10f)
-    private var cps by intValue("CPS", 20, 1..30)
+    private var cps by intValue("CPS", 20, 1..50)
     private var packetsPerAttack by intValue("Packets", 3, 1..5)
     private var yOffset by floatValue("YOffset", 0.0f, -10.0f..10.0f)
     private var noClip by boolValue("NoClip", false)
@@ -36,7 +36,6 @@ class EnemyHunterModule : Module("EnemyHunter", ModuleCategory.Combat) {
         val player = session.localPlayer
         val target = findTarget() ?: return
 
-        // --- Auto Attack Logic ---
         val attackInterval = 1000L / cps
         if (attackDelta >= attackInterval) {
             repeat(packetsPerAttack) {
@@ -56,14 +55,11 @@ class EnemyHunterModule : Module("EnemyHunter", ModuleCategory.Combat) {
         val dz = targetPos.z - playerPos.z
         val distance = sqrt(dx * dx + dy * dy + dz * dz)
 
-        // Flash-like speed scaling
         val speedScale = baseSpeed + (distance / 3.5)
         val moveVec = if (distance > 4) {
-            // Dash straight toward target
             val direction = Vector3f.from(dx.toFloat(), dy.toFloat(), dz.toFloat()).normalize()
             direction.mul(speedScale).add(jitterVec())
         } else {
-            // Strafe around target tightly
             angle = (angle + speedScale * 40) % 360
             val rad = Math.toRadians(angle)
             val offsetX = cos(rad) * strafeRadius
@@ -81,13 +77,34 @@ class EnemyHunterModule : Module("EnemyHunter", ModuleCategory.Combat) {
 
         val newPosition = player.vec3Position.add(motion)
 
-        // Block collision check if NoClip is off
         if (!noClip && isPathBlocked(player.vec3Position, newPosition)) return
+
+        // --- Smooth Rotation ---
+        val lookDX = targetPos.x - playerPos.x
+        val lookDY = (targetPos.y + yOffset) - playerPos.y
+        val lookDZ = targetPos.z - playerPos.z
+
+        val horizontalDist = sqrt(lookDX * lookDX + lookDZ * lookDZ)
+        val targetYaw = Math.toDegrees(atan2(-lookDX, lookDZ).toDouble()).toFloat()
+        val targetPitch = Math.toDegrees((-atan2(lookDY, horizontalDist)).toDouble()).toFloat()
+
+        val oldYaw = player.rotationYaw
+        val oldPitch = player.rotationPitch
+        val smoothFactor = 0.35f
+
+        val newYaw = interpolateAngle(oldYaw, targetYaw, smoothFactor)
+        val newPitch = interpolateAngle(oldPitch, targetPitch, smoothFactor)
+
+        player.rotationYaw = newYaw
+        player.rotationYawHead = newYaw
+        player.rotationPitch = newPitch
+
+        val rotationVec = Vector3f.from(newYaw, newPitch, 0f)
 
         session.clientBound(MovePlayerPacket().apply {
             runtimeEntityId = player.runtimeEntityId
             position = newPosition
-            rotation = player.vec3Rotation
+            rotation = rotationVec
             mode = MovePlayerPacket.Mode.NORMAL
             isOnGround = false
             ridingRuntimeEntityId = 0
@@ -115,7 +132,14 @@ class EnemyHunterModule : Module("EnemyHunter", ModuleCategory.Combat) {
         Vector3f.from(jitter().toDouble(), jitter().toDouble(), jitter().toDouble())
 
     private fun isPathBlocked(start: Vector3f, end: Vector3f): Boolean {
-        // TODO: Implement real raycast or block collision check based on your engine's level data
-        return false // For now, pretend it's always passable
+        // TODO: Implement real block collision
+        return false
+    }
+
+    private fun interpolateAngle(old: Float, target: Float, factor: Float): Float {
+        var delta = (target - old) % 360.0f
+        if (delta > 180f) delta -= 360f
+        if (delta < -180f) delta += 360f
+        return (old + delta * factor) % 360.0f
     }
 }

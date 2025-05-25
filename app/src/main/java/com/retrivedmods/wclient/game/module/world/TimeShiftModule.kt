@@ -1,4 +1,4 @@
-package com.retrivedmods.wclient.game.module.misc
+package com.retrivedmods.wclient.game.module.world
 
 import com.retrivedmods.wclient.game.InterceptablePacket
 import com.retrivedmods.wclient.game.Module
@@ -6,7 +6,7 @@ import com.retrivedmods.wclient.game.ModuleCategory
 import org.cloudburstmc.protocol.bedrock.packet.PlayerAuthInputPacket
 import org.cloudburstmc.protocol.bedrock.packet.SetTimePacket
 
-class TimeShiftModule : Module("time_shift", ModuleCategory.Misc) {
+class TimeShiftModule : Module("time_shift", ModuleCategory.World) {
 
     private val time by intValue("time", 6000, 0..24000)
     private var lastTimeUpdate = 0L

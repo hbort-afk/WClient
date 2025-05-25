@@ -1,6 +1,5 @@
 package com.retrivedmods.wclient.overlay
 
-import android.util.Base64
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,7 +18,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.PI
@@ -30,7 +28,9 @@ fun Watermark() {
     val phase by transition.animateFloat(
         initialValue = 0f,
         targetValue = (2 * PI).toFloat(),
-        animationSpec = infiniteRepeatable(animation = tween(3000, easing = LinearEasing))
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 4000, easing = LinearEasing)
+        )
     )
 
     val rainbowColors = List(7) { i ->
@@ -38,26 +38,20 @@ fun Watermark() {
         Color.hsv(hue, 1f, 1f)
     }
 
-    val gradient = Brush.horizontalGradient(rainbowColors)
+    val gradientBrush = Brush.horizontalGradient(rainbowColors)
 
-    // Base64 strings
-    val base64Client = "V0NsaWVudA=="
-    val base64Version = "djYuMA=="
-
-    val clientName = String(Base64.decode(base64Client, Base64.DEFAULT))
-    val versionText = String(Base64.decode(base64Version, Base64.DEFAULT))
-
-    val richText = buildAnnotatedString {
+    val richText: AnnotatedString = buildAnnotatedString {
         withStyle(style = SpanStyle(fontSize = 18.sp, fontWeight = FontWeight.SemiBold)) {
-            append(clientName)
+            append("WClient")
         }
         withStyle(
             style = SpanStyle(
                 fontSize = 10.sp,
+                fontWeight = FontWeight.Medium,
                 baselineShift = BaselineShift.Superscript
             )
         ) {
-            append(" $versionText")
+            append(" v7.0")
         }
     }
 
@@ -70,14 +64,13 @@ fun Watermark() {
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
-                .background(Color(0x00000000)) // translucent dark background
-                .padding(horizontal = 12.dp, vertical = 6.dp)
+                .background(Color(0x00000000)) // semi-transparent dark background
+                .padding(horizontal = 14.dp, vertical = 6.dp)
         ) {
             Text(
                 text = richText,
                 style = androidx.compose.ui.text.TextStyle(
-                    brush = gradient,
-                    fontSize = TextUnit.Unspecified,
+                    brush = gradientBrush,
                     fontWeight = FontWeight.Medium
                 )
             )

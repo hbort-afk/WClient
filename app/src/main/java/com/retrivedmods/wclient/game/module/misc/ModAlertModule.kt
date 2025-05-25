@@ -7,7 +7,7 @@ import org.cloudburstmc.protocol.bedrock.packet.AddPlayerPacket
 import org.cloudburstmc.protocol.bedrock.packet.RemoveEntityPacket
 import android.util.Log
 
-class ModAlertModule : Module("Mod Alert", ModuleCategory.Visual) {
+class ModAlertModule : Module("Mod Alert", ModuleCategory.Misc) {
 
     private val trackedPlayers = mutableMapOf<Long, String>()
 
@@ -18,13 +18,12 @@ class ModAlertModule : Module("Mod Alert", ModuleCategory.Visual) {
 
         when (packet) {
             is AddPlayerPacket -> {
-                // Log the incoming packet to verify it's being captured
+
                 Log.d("ModAlertModule", "AddPlayerPacket: ${packet.username}, EntityId: ${packet.uniqueEntityId}")
 
                 if (packet.uniqueEntityId != session.localPlayer.uniqueEntityId) {
                     val username = packet.username
 
-                    // Check if the username is valid and has not been processed yet
                     if (username.isNotBlank() && trackedPlayers.put(packet.uniqueEntityId, username) == null) {
                         Log.d("ModAlertModule", "Tracking new player: $username")
 
@@ -49,24 +48,20 @@ class ModAlertModule : Module("Mod Alert", ModuleCategory.Visual) {
             }
 
             is RemoveEntityPacket -> {
-                // Remove the player from tracking when they leave
+
                 trackedPlayers.remove(packet.uniqueEntityId)
             }
         }
     }
 
     private fun isMod(username: String): Boolean {
-        // Check for 'Mod' or 'MOD' with optional color codes
+
         return username.matches(Regex(".*§[0-9a-fk-or]{1,2}(Mod|mod|MOD).*"))
     }
 
     private fun isVip(username: String): Boolean {
-        // Check for 'VIP' with optional color codes
+
         return username.matches(Regex(".*§[0-9a-fk-or]{1,2}(VIP|vip|Vip).*"))
     }
 
-    fun onDisable() {
-        // Clear tracked players when the module is disabled
-        trackedPlayers.clear()
-    }
 }

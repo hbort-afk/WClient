@@ -7,8 +7,8 @@ import kotlinx.coroutines.*
 
 class FakeProxyModule : Module("FakeProxy", ModuleCategory.Visual) {
 
-    private val fakeProxyMessage = "§b• §f1.20.0 §bᴛᴏ §f1.21.80 §bᴛʀᴀɴꜱʟᴀᴛᴏʀ ᴘʀᴏxʏ •   \n §dʏᴏᴜᴛᴜʙᴇ §f@ʀᴇᴛʀɪᴠᴇᴅɢᴀᴍᴇʀ §dᴅɪꜱᴄᴏʀᴅ §f@ʀᴇᴛʀɪᴠᴇᴅɢᴀᴍᴇʀ"
-    private var messageDelaySeconds by floatValue("Delay", 10f, 1f..30f)  // Adjustable delay value
+    private val fakeProxyMessage = "§b• §f1.20.0 §bᴛᴏ §f1.21.81 §bᴛʀᴀɴꜱʟᴀᴛᴏʀ ᴘʀᴏxʏ •   \n §dʏᴏᴜᴛᴜʙᴇ §f@ʀᴇᴛʀɪᴠᴇᴅɢᴀᴍᴇʀ §dᴅɪꜱᴄᴏʀᴅ §f@ʀᴇᴛʀɪᴠᴇᴅɢᴀᴍᴇʀ"
+    private var messageDelaySeconds by floatValue("Delay", 10f, 1f..30f)
 
     private var messageJob: Job? = null
 
@@ -17,7 +17,7 @@ class FakeProxyModule : Module("FakeProxy", ModuleCategory.Visual) {
             messageJob = CoroutineScope(Dispatchers.Default).launch {
                 while (isEnabled) {
                     session.displayClientMessage(fakeProxyMessage)
-                    delay((messageDelaySeconds * 1000).toLong())  // Use the dynamic delay
+                    delay((messageDelaySeconds * 1000).toLong())
                 }
             }
         }
@@ -40,7 +40,7 @@ class FakeProxyModule : Module("FakeProxy", ModuleCategory.Visual) {
         if (packet is org.cloudburstmc.protocol.bedrock.packet.TextPacket &&
             packet.type == org.cloudburstmc.protocol.bedrock.packet.TextPacket.Type.CHAT
         ) {
-            // Optional: Replace any outgoing chat message
+
             packet.message = fakeProxyMessage
         }
     }

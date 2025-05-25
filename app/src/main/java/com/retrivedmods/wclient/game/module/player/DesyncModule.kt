@@ -1,4 +1,4 @@
-package com.retrivedmods.wclient.game.module.misc
+package com.retrivedmods.wclient.game.module.player
 
 import com.retrivedmods.wclient.game.InterceptablePacket
 import com.retrivedmods.wclient.game.Module
@@ -11,7 +11,7 @@ import org.cloudburstmc.protocol.bedrock.packet.PlayerAuthInputPacket
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.random.Random
 
-class DesyncModule : Module("desync", ModuleCategory.Misc) {
+class DesyncModule : Module("desync", ModuleCategory.Player) {
 
     private var isDesynced = false
     private val storedPackets = ConcurrentLinkedQueue<PlayerAuthInputPacket>()
@@ -36,7 +36,7 @@ class DesyncModule : Module("desync", ModuleCategory.Misc) {
                 if (packet != null) {
                     session.clientBound(packet)
                 }
-                delay(Random.nextLong(minResendInterval, maxResendInterval))
+                delay(Random.Default.nextLong(minResendInterval, maxResendInterval))
             }
         }
     }

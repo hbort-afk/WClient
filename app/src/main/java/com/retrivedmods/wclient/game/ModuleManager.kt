@@ -1,8 +1,6 @@
 package com.retrivedmods.wclient.game
 
 
-import com.retrivedmods.wclient.game.module.combat.CriticModule
-import com.retrivedmods.wclient.game.module.misc.CrasherModule
 import android.content.Context
 import android.net.Uri
 import com.retrivedmods.wclient.application.AppContext
@@ -14,22 +12,23 @@ import com.retrivedmods.wclient.game.module.combat.TrollerModule
 import com.retrivedmods.wclient.game.module.combat.InfiniteAuraModule
 import com.retrivedmods.wclient.game.module.combat.AntiKnockbackModule
 import com.retrivedmods.wclient.game.module.combat.AutoclickerModule
+import com.retrivedmods.wclient.game.module.combat.CriticalsModule
 import com.retrivedmods.wclient.game.module.combat.CrystalauraModule
 import com.retrivedmods.wclient.game.module.combat.EnemyHunterModule
 import com.retrivedmods.wclient.game.module.combat.KillauraModule
-import com.retrivedmods.wclient.game.module.combat.RotationAuraModule
-import com.retrivedmods.wclient.game.module.combat.SlotSwitcherModule
+import com.retrivedmods.wclient.game.module.combat.JavaAuraModule
+import com.retrivedmods.wclient.game.module.combat.ReachModule
+import com.retrivedmods.wclient.game.module.combat.SmartAuraModule
 import com.retrivedmods.wclient.game.module.misc.AdvanceDisablerModule
 import com.retrivedmods.wclient.game.module.misc.AutoDisconnectModule
-import com.retrivedmods.wclient.game.module.misc.DesyncModule
+import com.retrivedmods.wclient.game.module.player.DesyncModule
 import com.retrivedmods.wclient.game.module.motion.NoClipModule
 import com.retrivedmods.wclient.game.module.misc.PlayerTracerModule
 import com.retrivedmods.wclient.game.module.misc.PositionLoggerModule
-import com.retrivedmods.wclient.game.module.misc.TimeShiftModule
-import com.retrivedmods.wclient.game.module.misc.BlinkModule
-import com.retrivedmods.wclient.game.module.misc.ChatSuffixModule
-import com.retrivedmods.wclient.game.module.misc.RegenerationModule
-import com.retrivedmods.wclient.game.module.misc.WeatherControllerModule
+import com.retrivedmods.wclient.game.module.world.TimeShiftModule
+import com.retrivedmods.wclient.game.module.player.BlinkModule
+import com.retrivedmods.wclient.game.module.player.RegenerationModule
+import com.retrivedmods.wclient.game.module.world.WeatherControllerModule
 import com.retrivedmods.wclient.game.module.motion.AirJumpModule
 import com.retrivedmods.wclient.game.module.motion.AntiAFKModule
 import com.retrivedmods.wclient.game.module.motion.AutoWalkModule
@@ -43,18 +42,22 @@ import com.retrivedmods.wclient.game.module.motion.MotionVarModule
 import com.retrivedmods.wclient.game.module.motion.OpFightBotModule
 import com.retrivedmods.wclient.game.module.motion.SpeedModule
 import com.retrivedmods.wclient.game.module.motion.SprintModule
-import com.retrivedmods.wclient.game.module.visual.FreeCameraModule
+import com.retrivedmods.wclient.game.module.player.FreeCameraModule
 import com.retrivedmods.wclient.game.module.visual.NoHurtCameraModule
 import com.retrivedmods.wclient.game.module.visual.ZoomModule
 import com.retrivedmods.wclient.game.module.visual.DamageTextModule
 import com.retrivedmods.wclient.game.module.visual.ESPModule
 import com.retrivedmods.wclient.game.module.misc.ModAlertModule
-import com.retrivedmods.wclient.game.module.misc.SpammerModule
-import com.retrivedmods.wclient.game.module.motion.AutoPathModule
+import com.retrivedmods.wclient.game.module.motion.PlayerTPModule
+import com.retrivedmods.wclient.game.module.motion.SpiderModule
 import com.retrivedmods.wclient.game.module.motion.TPContainerModule
+import com.retrivedmods.wclient.game.module.player.FastBreakModule
+import com.retrivedmods.wclient.game.module.player.FastEatModule
+import com.retrivedmods.wclient.game.module.player.JesusModule
 import com.retrivedmods.wclient.game.module.visual.NightVisionModule
 import com.retrivedmods.wclient.game.module.visual.FakeProxyModule
 import com.retrivedmods.wclient.game.module.visual.PlayerJoinNotifierModule
+import com.retrivedmods.wclient.game.module.world.FakeLagModule
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
@@ -82,8 +85,6 @@ object ModuleManager {
             add(AutoclickerModule())
             add(CrystalauraModule())
             add(TrollerModule())
-            add(CriticModule())
-            add(CrasherModule())
             add(DamageTextModule())
             add(WAuraModule())
             add(SpeedModule())
@@ -91,7 +92,7 @@ object ModuleManager {
             add(ESPModule())
             add(BlinkModule())
             add(AdvanceDisablerModule())
-            add(RotationAuraModule())
+            add(JavaAuraModule())
             add(NightVisionModule())
             add(RegenerationModule())
             add(AutoDisconnectModule())
@@ -100,18 +101,22 @@ object ModuleManager {
             add(InfiniteAuraModule())
             add(ModAlertModule())
             add(EnemyHunterModule())
-            add(ChatSuffixModule())
+            add(CriticalsModule())
             add(FakeProxyModule())
-            add(SpammerModule())
-            add(AutoPathModule())
-            add(SlotSwitcherModule())
+            add(ReachModule())
+            add(SmartAuraModule())
+            add(PlayerTPModule())
             add(TPContainerModule())
-
             add(HighJumpModule())
+            add(FastEatModule())
+            add(SpiderModule())
+            add(JesusModule())
 
             add(AntiKnockbackModule())
             add(FastStopModule())
             add(OpFightBotModule())
+            add(FakeLagModule())
+            add(FastBreakModule())
 
             add(BhopModule())
             add(SprintModule())
@@ -123,13 +128,13 @@ object ModuleManager {
             add(MotionFlyModule())
             add(FreeCameraModule())
             add(KillauraModule())
-            // add(CriticModule())
+
 
             add(AntiCrystalModule())
 
             add(TimeShiftModule())
             add(WeatherControllerModule())
-            //  add(CrasherModule())
+
             add(MotionVarModule())
             add(PlayerTracerModule())
 

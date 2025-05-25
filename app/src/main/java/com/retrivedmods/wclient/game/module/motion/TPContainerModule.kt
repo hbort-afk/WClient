@@ -27,7 +27,7 @@ class TPContainerModule : Module("TP Container", ModuleCategory.Motion) {
         val packet = interceptablePacket.packet
         if (packet !is PlayerAuthInputPacket) return
 
-        val player = session.localPlayer // No need for Elvis operator as it's non-nullable
+        val player = session.localPlayer
         val target = findNearestContainer(player) ?: return
 
         val now = System.currentTimeMillis()
@@ -57,7 +57,7 @@ class TPContainerModule : Module("TP Container", ModuleCategory.Motion) {
             position = newPosition
             rotation = player.vec3Rotation
             mode = MovePlayerPacket.Mode.NORMAL
-            isOnGround = true // Ensure the player is considered on the ground
+            isOnGround = true
             ridingRuntimeEntityId = 0
             tick = player.tickExists
         })

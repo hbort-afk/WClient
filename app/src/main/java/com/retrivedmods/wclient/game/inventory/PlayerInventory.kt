@@ -26,7 +26,7 @@ import java.util.LinkedList
 
 class PlayerInventory(private val player: LocalPlayer) : EntityInventory(player) {
 
-    // 36 (inventory) + 4 (armor) + 1 (off-hand)
+
     override val content = Array(41) { ItemData.AIR }
 
     var heldItemSlot = 0

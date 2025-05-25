@@ -27,16 +27,16 @@ class AdvanceDisablerModule : Module("AdvancedDisabler", ModuleCategory.Misc) {
         val packet = interceptablePacket.packet
 
         if (packet is MovePlayerPacket) {
-            // Subtle Y desync for all servers
+
             if (lifeboatBypass || hiveBypass || cubecraftBypass) {
-                if (Random.nextInt(4) == 0) {
+                if (Random.Default.nextInt(4) == 0) {
                     packet.isOnGround = true
-                    packet.position = packet.position.add(0f, 0.015f + Random.nextFloat() * 0.01f, 0f)
+                    packet.position = packet.position.add(0f, 0.015f + Random.Default.nextFloat() * 0.01f, 0f)
                 }
             }
 
-            // Spoof teleportation state
-            if (spoofTeleportLag && Random.nextInt(3) == 0) {
+
+            if (spoofTeleportLag && Random.Default.nextInt(3) == 0) {
                 try {
                     val field = packet.javaClass.getDeclaredField("teleportationCause")
                     field.isAccessible = true
@@ -45,27 +45,27 @@ class AdvanceDisablerModule : Module("AdvancedDisabler", ModuleCategory.Misc) {
                 }
             }
 
-            // Anti-kick vertical bounce
+
             if (antiKick && packet.position.y <= 0.5f) {
-                packet.position = packet.position.add(0f, 1.5f + Random.nextFloat(), 0f)
+                packet.position = packet.position.add(0f, 1.5f + Random.Default.nextFloat(), 0f)
                 packet.isOnGround = true
             }
         }
 
         if (packet is PlayerAuthInputPacket) {
-            // Blink packet storage
+
             if (blinkPackets) {
                 blinkBuffer.add(packet)
-                if (blinkBuffer.size >= 10 + Random.nextInt(5)) {
+                if (blinkBuffer.size >= 10 + Random.Default.nextInt(5)) {
                     blinkBuffer.forEach { spoof ->
                         session.clientBound(spoof)
                     }
                     blinkBuffer.clear()
                 }
-                return // Cancel sending now
+                return
             }
 
-            // Packet flood spoofing
+
             if (packetFlood) {
                 packetCounter++
                 if (packetCounter >= floodRate) {
@@ -75,24 +75,24 @@ class AdvanceDisablerModule : Module("AdvancedDisabler", ModuleCategory.Misc) {
                             position = packet.position
                             delta = packet.delta
                             inputMode = packet.inputMode
-                            tick = packet.tick + Random.nextInt(1, 6)
+                            tick = packet.tick + Random.Default.nextInt(1, 6)
                         }
                         session.clientBound(spoof)
                     }
                 }
             }
 
-            // Minor desync to confuse server heuristics
-            if (Random.nextBoolean()) {
-                packet.delta = packet.delta.add(0.001f * (Random.nextFloat() - 0.5f),
+
+            if (Random.Default.nextBoolean()) {
+                packet.delta = packet.delta.add(0.001f * (Random.Default.nextFloat() - 0.5f),
                     0f,
-                    0.001f * (Random.nextFloat() - 0.5f))
+                    0.001f * (Random.Default.nextFloat() - 0.5f))
             }
         }
     }
 
      fun onDisable() {
-        // Flush blink buffer on disable
+
         blinkBuffer.forEach {
             session.clientBound(it)
         }

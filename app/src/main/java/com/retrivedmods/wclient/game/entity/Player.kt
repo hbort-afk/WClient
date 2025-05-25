@@ -15,8 +15,8 @@ open class Player(
     open val username: String
 ) : Entity(uniqueEntityId) {
 
-    // Health property with `open` modifier to allow subclassing
-    open var health: Float = 20.0f // Default to 20 (full health in Minecraft)
+
+    open var health: Float = 20.0f
 
     val vec3PositionFeet: Vector3f
         get() = Vector3f.from(posX, posY, posZ)
@@ -27,14 +27,14 @@ open class Player(
     override fun onPacketBound(packet: BedrockPacket) {
         super.onPacketBound(packet)
 
-        // Handle movement packets
+
         if (packet is MovePlayerPacket && packet.runtimeEntityId == runtimeEntityId) {
             move(packet.position.x, packet.position.y, packet.position.z)
             rotate(packet.rotation)
             tickExists++
         }
 
-        // Handle health attribute updates
+
         if (packet is UpdateAttributesPacket && packet.runtimeEntityId == runtimeEntityId) {
             packet.attributes.forEach { attribute ->
                 if (attribute.name == "minecraft:health") {

@@ -1,4 +1,4 @@
-package com.retrivedmods.wclient.game.module.misc
+package com.retrivedmods.wclient.game.module.player
 
 import com.retrivedmods.wclient.game.InterceptablePacket
 import com.retrivedmods.wclient.game.Module
@@ -7,7 +7,7 @@ import com.retrivedmods.wclient.game.data.Effect
 import org.cloudburstmc.protocol.bedrock.packet.MobEffectPacket
 import org.cloudburstmc.protocol.bedrock.packet.PlayerAuthInputPacket
 
-class RegenerationModule : Module("Regeneration", ModuleCategory.Misc) {
+class RegenerationModule : Module("Regeneration", ModuleCategory.Player) {
 
     override fun onDisabled() {
         super.onDisabled()
@@ -15,7 +15,7 @@ class RegenerationModule : Module("Regeneration", ModuleCategory.Misc) {
             session.clientBound(MobEffectPacket().apply {
                 runtimeEntityId = session.localPlayer.runtimeEntityId
                 event = MobEffectPacket.Event.REMOVE
-                effectId = Effect.REGENERATION
+                effectId = Effect.Companion.REGENERATION
             })
         }
     }
@@ -31,7 +31,7 @@ class RegenerationModule : Module("Regeneration", ModuleCategory.Misc) {
                 session.clientBound(MobEffectPacket().apply {
                     runtimeEntityId = session.localPlayer.runtimeEntityId
                     event = MobEffectPacket.Event.ADD
-                    effectId = Effect.REGENERATION
+                    effectId = Effect.Companion.REGENERATION
                     amplifier -= 1
                     isParticles = false
                     duration = 360000
