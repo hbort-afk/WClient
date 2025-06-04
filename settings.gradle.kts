@@ -25,5 +25,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "MuCuteClient"
+rootProject.name = "WClient"
 include(":app")

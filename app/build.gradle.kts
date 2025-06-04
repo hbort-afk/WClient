@@ -9,16 +9,16 @@ plugins {
 }
 
 android {
-    namespace = "com.mucheng.mucute.client"
+    namespace = "com.retrivedmods.wclient"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.mucheng.mucute.client"
+        applicationId = "com.retrivedmods.wclient"
         minSdk = 28
         //noinspection EditedTargetSdkVersion
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -125,7 +125,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
-
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
