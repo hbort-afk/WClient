@@ -9,7 +9,11 @@ import com.retrivedmods.wclient.game.entity.Player
 
 class DamageTextModule : Module("DamageText", ModuleCategory.Visual) {
 
+<<<<<<< HEAD
     // Intercepting the packet to track damage events
+=======
+
+>>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
     override fun beforePacketBound(interceptablePacket: InterceptablePacket) {
         if (!isEnabled) return
 
@@ -18,6 +22,7 @@ class DamageTextModule : Module("DamageText", ModuleCategory.Visual) {
         if (packet is EntityEventPacket && packet.type == EntityEventType.HURT) {
             val entityId = packet.runtimeEntityId
 
+<<<<<<< HEAD
             // Ignore self-damage (don't show message for local player)
             if (entityId == session.localPlayer.runtimeEntityId) return
 
@@ -34,8 +39,30 @@ class DamageTextModule : Module("DamageText", ModuleCategory.Visual) {
 
 
                 // Send the formatted damage message to the chat
+=======
+
+            if (entityId == session.localPlayer.runtimeEntityId) return
+
+
+            val entity = session.level.entityMap[entityId]
+
+
+            if (entity is Player) {
+                val playerName = entity.username
+
+                val stateText = "$playerName§r §cEnemy Damaged"
+                val status = "§f$stateText"
+                val message = " $status"
+
+
+
+>>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
                 session.displayClientMessage(message)
             }
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c

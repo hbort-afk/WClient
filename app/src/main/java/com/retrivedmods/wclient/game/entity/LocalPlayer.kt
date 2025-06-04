@@ -48,8 +48,13 @@ class LocalPlayer(val session: GameSession) : Player(0L, 0L, UUID.randomUUID(), 
     var openContainer: AbstractInventory? = null
         private set
 
+<<<<<<< HEAD
     // Add health property here
     var health: Float = 100f // Default health is 100
+=======
+    // Overridden health property
+    override var health: Float = 100f // Default health is 100
+>>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
 
     override fun onPacketBound(packet: BedrockPacket) {
         super.onPacketBound(packet)
@@ -136,4 +141,8 @@ class LocalPlayer(val session: GameSession) : Player(0L, 0L, UUID.randomUUID(), 
         super.onDisconnect()
         reset()
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c

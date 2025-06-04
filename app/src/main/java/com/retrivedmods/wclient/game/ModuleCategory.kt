@@ -21,6 +21,17 @@ enum class ModuleCategory(
         iconResId = R.drawable.view_in_ar_24px,
         labelResId = R.string.visual
     ),
+<<<<<<< HEAD
+=======
+    Player(
+        iconResId = R.drawable.baseline_emoji_people_24,
+        labelResId = R.string.player
+    ),
+    World(
+        iconResId = R.drawable.baseline_cloudy_snowing_24,
+        labelResId = R.string.world
+    ),
+>>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
     Misc(
         iconResId = R.drawable.toc_24px,
         labelResId = R.string.misc

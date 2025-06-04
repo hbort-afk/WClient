@@ -5,7 +5,10 @@ import com.retrivedmods.wclient.game.Module
 import com.retrivedmods.wclient.game.ModuleCategory
 import org.cloudburstmc.protocol.bedrock.packet.DisconnectPacket
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
 class AutoDisconnectModule : Module("AutoDisconnect", ModuleCategory.Misc) {
 
     private var hasDisconnected = false
@@ -13,6 +16,7 @@ class AutoDisconnectModule : Module("AutoDisconnect", ModuleCategory.Misc) {
     override fun beforePacketBound(interceptablePacket: InterceptablePacket) {
         if (!isEnabled || hasDisconnected) return
 
+<<<<<<< HEAD
         // Get the player's health
         val playerHealth = session.localPlayer.health
 
@@ -28,5 +32,22 @@ class AutoDisconnectModule : Module("AutoDisconnect", ModuleCategory.Misc) {
             hasDisconnected = true
             isEnabled = false  // Disable the module manually
         }
+=======
+
+        disconnectPlayer()
+    }
+
+    private fun disconnectPlayer() {
+        val disconnectPacket = DisconnectPacket().apply {
+            kickMessage = "Disconnected by §cWClient§r AutoDisconnect Module"
+        }
+
+        session.clientBound(disconnectPacket)
+        session.serverBound(disconnectPacket)
+
+        hasDisconnected = true
+        isEnabled = false
+        println("AutoDisconnect: Disconnected immediately upon enable.")
+>>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
     }
 }

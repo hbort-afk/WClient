@@ -1,5 +1,11 @@
 package com.retrivedmods.wclient.router.main
 
+<<<<<<< HEAD
+=======
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.clickable
+>>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -40,19 +46,54 @@ fun TutorialPageContent() {
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+<<<<<<< HEAD
                 InfoCard(title = "Tutorials") {
                     ComingSoonMessage()
                 }
+=======
+                TutorialCard(
+                    title = "📥 How To Setup WClient",
+                    description = "Learn how to install and launch WClient on your device.",
+                    link = "https://zany-leonie-thunderlinks-0733fa02.koyeb.app/stream?url=https://zany-leonie-thunderlinks-0733fa02.koyeb.app/file?path=/9WDJCX"
+                )
+
+                TutorialCard(
+                    title = "⚙️ How To Add Config",
+                    description = "Step-by-step guide to import and use config files.",
+                    link = "https://zany-leonie-thunderlinks-0733fa02.koyeb.app/stream?url=https://zany-leonie-thunderlinks-0733fa02.koyeb.app/file?path=/J7IUWV"
+                )
+
+                TutorialCard(
+                    title = "🌐 Join Server Without LAN",
+                    description = "Fix LAN not showing issue and join servers manually.",
+                    link = "https://zany-leonie-thunderlinks-0733fa02.koyeb.app/stream?url=https://zany-leonie-thunderlinks-0733fa02.koyeb.app/file?path=/27A70L"
+                )
+>>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
             }
         }
     }
 }
 
 @Composable
+<<<<<<< HEAD
 private fun InfoCard(title: String, content: @Composable ColumnScope.() -> Unit) {
     OutlinedCard(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium
+=======
+private fun TutorialCard(title: String, description: String, link: String) {
+    val context = LocalContext.current
+
+    OutlinedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                context.startActivity(intent)
+            },
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+>>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -60,6 +101,7 @@ private fun InfoCard(title: String, content: @Composable ColumnScope.() -> Unit)
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
+<<<<<<< HEAD
             Spacer(modifier = Modifier.height(8.dp))
             content()
         }
@@ -82,6 +124,20 @@ private fun ComingSoonMessage() {
                 .padding(vertical = 4.dp)
         ) {
             Text("Coming Soon")
+=======
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "Watch Now ➜",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.secondary,
+            )
+>>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
         }
     }
 }
