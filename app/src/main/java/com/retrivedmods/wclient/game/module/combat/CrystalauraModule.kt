@@ -4,111 +4,79 @@ import com.retrivedmods.wclient.game.InterceptablePacket
 import com.retrivedmods.wclient.game.Module
 import com.retrivedmods.wclient.game.ModuleCategory
 import com.retrivedmods.wclient.game.entity.*
+import org.cloudburstmc.protocol.bedrock.packet.MovePlayerPacket
 import org.cloudburstmc.protocol.bedrock.packet.PlayerAuthInputPacket
+import org.cloudburstmc.math.vector.Vector3f
+import kotlin.math.atan2
+import kotlin.math.sqrt
 
-class CrystalauraModule : Module("Crystal Aura", ModuleCategory.Combat) {
+class CrystalauraModule : Module("CrystalAura", ModuleCategory.Combat) {
 
-<<<<<<< HEAD
-    private var rangeValue by floatValue("range", 6.0f, 3f..10f)  // Range to detect End Crystals
-    private var attackInterval by intValue("delay", 5, 1..20)  // Attack delay in ticks
-    private var cpsValue by intValue("cps", 10, 1..20)  // Clicks per second
-    private var suicideValue by boolValue("Suicide", false)  // Whether the player can damage themselves with crystals
-
-    private var lastAttackTime = 0L
-
-    // This will check and attack End Crystals automatically in each tick
-    override fun beforePacketBound(interceptablePacket: InterceptablePacket) {
-        if (!isEnabled) return
-
-        // We perform the attack logic at intervals based on the CPS value
-=======
-    private var rangeValue by floatValue("range", 6.0f, 3f..10f)
-    private var attackInterval by intValue("delay", 5, 1..20)
-    private var cpsValue by intValue("cps", 10, 1..20)
+    private var rangeValue by floatValue("Range", 6.0f, 3f..10f)
+    private var cpsValue by intValue("CPS", 15, 1..30)
     private var suicideValue by boolValue("Suicide", false)
 
     private var lastAttackTime = 0L
-
+    private var tickCounter = 0
 
     override fun beforePacketBound(interceptablePacket: InterceptablePacket) {
         if (!isEnabled) return
+        if (interceptablePacket.packet !is PlayerAuthInputPacket) return
 
-
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
         val currentTime = System.currentTimeMillis()
-        val minAttackDelay = 1000L / cpsValue
+        val attackDelay = 1000L / cpsValue
 
-        if ((currentTime - lastAttackTime) >= minAttackDelay) {
+        if ((currentTime - lastAttackTime) >= attackDelay) {
             val crystals = searchForCrystals()
 
-            if (crystals.isNotEmpty()) {
-                crystals.forEach { crystal ->
-<<<<<<< HEAD
-                    // Check if attacking this crystal will hurt the player too much
-                    val damage = calculateCrystalDamage(crystal)
+            for (crystal in crystals) {
+                val damage = calculateCrystalDamage(crystal)
 
-                    // Check if attacking the crystal will damage the player, and only attack if it doesn't
-                    if (damage > 0f && (suicideValue || damage < session.localPlayer.health)) {
-                        // Attack the crystal if damage is acceptable
-=======
-
-                    val damage = calculateCrystalDamage(crystal)
-
-
-                    if (damage > 0f && (suicideValue || damage < session.localPlayer.health)) {
-
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
-                        session.localPlayer.attack(crystal)
-                        lastAttackTime = currentTime
-                    }
+                if (damage > 0f && (suicideValue || damage < session.localPlayer.health)) {
+                    spoofRotationTo(crystal)
+                    session.localPlayer.attack(crystal)
+                    lastAttackTime = currentTime
+                    break
                 }
             }
         }
     }
 
-<<<<<<< HEAD
-    // This function searches for all End Crystals within range of the player
     private fun searchForCrystals(): List<EntityUnknown> {
         return session.level.entityMap.values
-            .filter { entity ->
-                // Ensure that we're filtering for the right type of entity (End Crystal)
-                entity is EntityUnknown && entity.identifier == "minecraft:end_crystal" && entity.distance(session.localPlayer) < rangeValue
+            .filterIsInstance<EntityUnknown>()
+            .filter {
+                it.identifier == "minecraft:end_crystal" &&
+                        it.distance(session.localPlayer) <= rangeValue
             }
-            .map { it as EntityUnknown } // Ensure the result is of type EntityUnknown
     }
 
-    // This function calculates how much damage the player would take by attacking a crystal
     private fun calculateCrystalDamage(crystal: EntityUnknown): Float {
-        var selfDamage = 0f
-
-        // Custom damage simulation logic (assuming explosions cause 6 blocks of damage in a small radius)
-        val explosionDamage = 6f
-        // Calculate damage based on proximity (this could be further refined)
-        if (crystal.distance(session.localPlayer) < rangeValue) {
-            selfDamage = explosionDamage // You would replace this with actual logic for damage calculation
-=======
-
-    private fun searchForCrystals(): List<EntityUnknown> {
-        return session.level.entityMap.values
-            .filter { entity ->
-
-                entity is EntityUnknown && entity.identifier == "minecraft:end_crystal" && entity.distance(session.localPlayer) < rangeValue
-            }
-            .map { it as EntityUnknown }
+        val baseDamage = 6f
+        return if (crystal.distance(session.localPlayer) <= rangeValue) baseDamage else 0f
     }
 
+    private fun spoofRotationTo(target: Entity) {
+        val player = session.localPlayer
+        val dx = target.vec3Position.x - player.vec3Position.x
+        val dy = target.vec3Position.y - player.vec3Position.y
+        val dz = target.vec3Position.z - player.vec3Position.z
 
-    private fun calculateCrystalDamage(crystal: EntityUnknown): Float {
-        var selfDamage = 0f
+        val dist = sqrt(dx * dx + dz * dz)
+        val yaw = Math.toDegrees(atan2(-dx.toDouble(), dz.toDouble())).toFloat()
+        val pitch = Math.toDegrees(-atan2(dy.toDouble(), dist.toDouble())).toFloat()
 
+        tickCounter = (tickCounter + 1) and 0xFFFF
 
-        val explosionDamage = 6f
-
-        if (crystal.distance(session.localPlayer) < rangeValue) {
-            selfDamage = explosionDamage
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
+        val spoofPacket = MovePlayerPacket().apply {
+            runtimeEntityId = player.runtimeEntityId
+            position = player.vec3Position
+            rotation = Vector3f.from(yaw, pitch, 0f)
+            mode = MovePlayerPacket.Mode.NORMAL
+            isOnGround = true
+            tick = tickCounter.toLong()
         }
 
-        return selfDamage
+        session.clientBound(spoofPacket)
     }
 }

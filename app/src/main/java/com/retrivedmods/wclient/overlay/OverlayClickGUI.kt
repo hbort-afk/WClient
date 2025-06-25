@@ -1,73 +1,49 @@
 package com.retrivedmods.wclient.overlay
 
-<<<<<<< HEAD
-import android.os.Build
-import android.view.WindowManager
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
-=======
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.view.WindowManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.SaveAlt
-import androidx.compose.material.icons.rounded.Upload
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-<<<<<<< HEAD
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.fastForEach
-import com.retrivedmods.wclient.game.ModuleCategory
-import com.retrivedmods.wclient.game.ModuleContent
-import com.retrivedmods.wclient.ui.component.NavigationRailX
-import kotlin.math.sin
-=======
+import androidx.compose.ui.draw.*
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.retrivedmods.wclient.R
 import com.retrivedmods.wclient.game.ModuleCategory
 import com.retrivedmods.wclient.game.ModuleContent
 import com.retrivedmods.wclient.game.ModuleManager
-import com.retrivedmods.wclient.ui.component.NavigationRailX
 import kotlinx.coroutines.launch
 import kotlin.math.PI
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
 
 class OverlayClickGUI : OverlayWindow() {
 
@@ -78,7 +54,7 @@ class OverlayClickGUI : OverlayWindow() {
                 blurBehindRadius = 30
             }
             layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-            dimAmount = 0.5f
+            dimAmount = 0.8f
             windowAnimations = android.R.style.Animation_Dialog
             width = WindowManager.LayoutParams.MATCH_PARENT
             height = WindowManager.LayoutParams.MATCH_PARENT
@@ -92,169 +68,185 @@ class OverlayClickGUI : OverlayWindow() {
 
     @Composable
     override fun Content() {
-<<<<<<< HEAD
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.6f))
-=======
         val context = LocalContext.current
 
         Box(
             Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.75f))
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(
+                            Color(0x95000000),
+                            Color(0xE0000000)
+                        ),
+                        radius = 1000f
+                    )
+                )
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) { OverlayManager.dismissOverlayWindow(this) },
             contentAlignment = Alignment.Center
         ) {
-            Column(
-<<<<<<< HEAD
-                Modifier.wrapContentSize().padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                RainbowText("WClient", 32f)
-                Spacer(modifier = Modifier.height(20.dp))
-
-                ElevatedCard(
-                    shape = MaterialTheme.shapes.large,
-                    modifier = Modifier.fillMaxSize(0.9f)
-                ) {
-                    Row(Modifier.fillMaxSize()) {
-                        NavigationRailX(
-                            windowInsets = WindowInsets(0, 0, 0, 0)
-                        ) {
-                            ModuleCategory.entries.fastForEach { moduleCategory ->
-                                NavigationRailItem(
-                                    selected = selectedModuleCategory === moduleCategory,
-                                    onClick = { selectedModuleCategory = moduleCategory },
-                                    icon = {
-                                        Icon(
-                                            painterResource(moduleCategory.iconResId),
-                                            contentDescription = null
-                                        )
-                                    },
-                                    label = {
-                                        Text(stringResource(moduleCategory.labelResId))
-                                    },
-                                    alwaysShowLabel = false
-                                )
-                            }
-                        }
-                        VerticalDivider()
-                        AnimatedContent(
-                            targetState = selectedModuleCategory,
-                            label = "animatedPage",
-                            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainer)
-                        ) { moduleCategory ->
-                            if (moduleCategory == ModuleCategory.Config) {
-                                ConfigCategoryContent()
-                            } else {
-                                ModuleContent(moduleCategory)
-                            }
-=======
+            // Compact Premium Container
+            Box(
                 modifier = Modifier
-                    .fillMaxSize(0.95f)
-                    .background(Color(0xFF1A1A1A), MaterialTheme.shapes.extraLarge)
-                    .border(1.dp, Color.White.copy(alpha = 0.05f), MaterialTheme.shapes.extraLarge)
-                    .padding(16.dp)
-                    .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {},
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                // Top Bar
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp)
-                        .background(Color(0xFF202020), shape = MaterialTheme.shapes.medium)
-                        .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_wclient),
-                            contentDescription = "WClient Logo",
-                            tint = Color.White,
-                            modifier = Modifier.size(28.dp)
-                        )
-                        Spacer(Modifier.width(10.dp))
-                        RainbowText("WClient", fontSize = 22f)
-                    }
-
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        IconButton(onClick = {
-                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/N2Gejr8Fbp")))
-                        }) {
-                            Icon(painterResource(R.drawable.ic_discord), contentDescription = "Discord", tint = Color.White)
-                        }
-                        IconButton(onClick = {
-                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://wclient.neocities.org/")))
-                        }) {
-                            Icon(painterResource(R.drawable.ic_web), contentDescription = "Website", tint = Color.White)
-                        }
-                        IconButton(onClick = { /* Settings logic */ }) {
-                            Icon(painterResource(R.drawable.ic_settings), contentDescription = "Settings", tint = Color.White)
-                        }
-                        IconButton(onClick = { OverlayManager.dismissOverlayWindow(this@OverlayClickGUI) }) {
-                            Icon(painterResource(R.drawable.ic_close), contentDescription = "Close", tint = Color.White)
-                        }
-                    }
-                }
-
-                // Main GUI
-                Row(Modifier.fillMaxSize()) {
-                    Column(
-                        modifier = Modifier
-                            .background(Color(0xFF222222))
-                            .border(1.dp, Color.White.copy(alpha = 0.15f), shape = RoundedCornerShape(12.dp))
-                            .padding(vertical = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        ModuleCategory.entries.forEach { moduleCategory ->
-                            val selected = selectedModuleCategory == moduleCategory
-                            Box(
-                                modifier = Modifier
-                                    .padding(horizontal = 6.dp)
-                                    .clip(CircleShape)
-                                    .background(if (selected) Color.Red else Color.Transparent)
-                                    .clickable { selectedModuleCategory = moduleCategory }
-                                    .padding(10.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(moduleCategory.iconResId),
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                        }
-                    }
-
-                    VerticalDivider(
-                        thickness = 1.dp,
-                        color = Color.White.copy(alpha = 0.08f),
-                        modifier = Modifier.fillMaxHeight()
+                    .size(width = 720.dp, height = 480.dp)
+                    .rgbBorder()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0xFF0A0A0A),
+                                Color(0xFF151515),
+                                Color(0xFF0A0A0A)
+                            )
+                        ),
+                        RoundedCornerShape(20.dp)
                     )
+                    .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {}
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    // Compact Header
+                    CompactHeader()
 
-                    AnimatedContent(
-                        targetState = selectedModuleCategory,
-                        label = "AnimatedContent",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color(0xFF1E1E1E))
-                            .border(1.dp, Color.White.copy(alpha = 0.15f), shape = RoundedCornerShape(12.dp))
-                            .padding(16.dp)
-                    ) { category ->
-                        if (category == ModuleCategory.Config) {
-                            SettingsPageContent()
-                        } else {
-                            ModuleContent(category)
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
-                        }
+                    // Main Content Area
+                    MainContentArea()
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun CompactHeader() {
+        val context = LocalContext.current
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0x35FF0080),
+                            Color(0x3500FF80),
+                            Color(0x358000FF),
+                            Color(0x35FF0080)
+                        )
+                    ),
+                    RoundedCornerShape(15.dp)
+                )
+                .border(
+                    1.5.dp,
+                    Color.White.copy(alpha = 0.15f),
+                    RoundedCornerShape(15.dp)
+                )
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Logo and Title
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    Color(0x40FFFFFF),
+                                    Color(0x20FFFFFF)
+                                )
+                            ),
+                            CircleShape
+                        )
+                        .border(1.dp, Color.White.copy(0.2f), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_wclient),
+                        contentDescription = "WClient Logo",
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                RainbowText("WClient", fontSize = 20f, fontWeight = FontWeight.Bold)
+            }
+
+            // Action Buttons
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                PremiumIconButton(
+                    iconRes = R.drawable.ic_discord,
+                    onClick = {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/N2Gejr8Fbp")))
+                    }
+                )
+                PremiumIconButton(
+                    iconRes = R.drawable.ic_web,
+                    onClick = {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://wclient.neocities.org/")))
+                    }
+                )
+                PremiumIconButton(
+                    iconRes = R.drawable.ic_settings,
+                    onClick = { selectedModuleCategory = ModuleCategory.Config }
+                )
+                PremiumIconButton(
+                    iconRes = R.drawable.ic_close,
+                    onClick = { OverlayManager.dismissOverlayWindow(this@OverlayClickGUI) }
+                )
+            }
+        }
+    }
+
+    @Composable
+    private fun MainContentArea() {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            // Compact Category Sidebar
+            CompactCategorySidebar()
+
+            // Content Area with Premium Border
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0x12FFFFFF),
+                                Color(0x08FFFFFF),
+                                Color(0x12FFFFFF)
+                            )
+                        ),
+                        RoundedCornerShape(15.dp)
+                    )
+                    .border(
+                        1.dp,
+                        Color.White.copy(alpha = 0.1f),
+                        RoundedCornerShape(15.dp)
+                    )
+                    .padding(16.dp)
+            ) {
+                AnimatedContent(
+                    targetState = selectedModuleCategory,
+                    transitionSpec = {
+                        fadeIn(animationSpec = tween(300)) + slideInHorizontally { it / 4 } togetherWith
+                                fadeOut(animationSpec = tween(300)) + slideOutHorizontally { -it / 4 }
+                    },
+                    label = "CategoryContent"
+                ) { category ->
+                    if (category == ModuleCategory.Config) {
+                        CompactSettingsContent()
+                    } else {
+                        ModuleContent(category)
                     }
                 }
             }
@@ -262,53 +254,184 @@ class OverlayClickGUI : OverlayWindow() {
     }
 
     @Composable
-    private fun RainbowText(text: String, fontSize: Float) {
+    private fun CompactCategorySidebar() {
+        LazyColumn(
+            modifier = Modifier
+                .width(70.dp)
+                .fillMaxHeight()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0x25FFFFFF),
+                            Color(0x15FFFFFF),
+                            Color(0x25FFFFFF)
+                        )
+                    ),
+                    RoundedCornerShape(15.dp)
+                )
+                .border(
+                    1.dp,
+                    Color.White.copy(alpha = 0.12f),
+                    RoundedCornerShape(15.dp)
+                )
+                .padding(vertical = 12.dp, horizontal = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            items(ModuleCategory.entries.size) { index ->
+                val category = ModuleCategory.entries[index]
+                CategoryIcon(
+                    category = category,
+                    isSelected = selectedModuleCategory == category,
+                    onClick = { selectedModuleCategory = category }
+                )
+            }
+        }
+    }
+
+    @Composable
+    private fun CategoryIcon(
+        category: ModuleCategory,
+        isSelected: Boolean,
+        onClick: () -> Unit
+    ) {
+        val animatedScale by animateFloatAsState(
+            targetValue = if (isSelected) 1.1f else 1f,
+            animationSpec = spring(dampingRatio = 0.6f)
+        )
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.clickable { onClick() }
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .scale(animatedScale)
+                    .background(
+                        if (isSelected) {
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    Color(0xFF00FF88),
+                                    Color(0xFF0088FF),
+                                    Color(0xFF8800FF)
+                                )
+                            )
+                        } else {
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    Color(0x35FFFFFF),
+                                    Color(0x15FFFFFF)
+                                )
+                            )
+                        },
+                        CircleShape
+                    )
+                    .border(
+                        if (isSelected) 2.dp else 1.dp,
+                        if (isSelected) Color.White.copy(alpha = 0.4f) else Color.White.copy(alpha = 0.15f),
+                        CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(category.iconResId),
+                    contentDescription = category.name,
+                    tint = if (isSelected) Color.White else Color.White.copy(alpha = 0.8f),
+                    modifier = Modifier.size(22.dp)
+                )
+            }
+
+            Text(
+                text = category.name,
+                color = if (isSelected) Color.White else Color.White.copy(alpha = 0.6f),
+                fontSize = 9.sp,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.width(54.dp)
+            )
+        }
+    }
+
+    @Composable
+    private fun PremiumIconButton(
+        iconRes: Int,
+        onClick: () -> Unit
+    ) {
         val transition = rememberInfiniteTransition()
-        val phase by transition.animateFloat(
+        val shimmer by transition.animateFloat(
             initialValue = 0f,
-<<<<<<< HEAD
-            targetValue = 2f * Math.PI.toFloat(),
+            targetValue = 1f,
             animationSpec = infiniteRepeatable(
-                animation = tween(durationMillis = 3000, easing = LinearEasing)
+                animation = tween(2000, easing = LinearEasing)
             )
         )
 
-        val colors = List(7) { i ->
-            val hue = (i * 360 / 7 + (phase * 180 / Math.PI).toInt()) % 360
-=======
-            targetValue = (2 * PI).toFloat(),
-            animationSpec = infiniteRepeatable(animation = tween(3000, easing = LinearEasing))
+        Box(
+            modifier = Modifier
+                .size(36.dp)
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(
+                            Color(0x30FFFFFF),
+                            Color(0x15FFFFFF)
+                        )
+                    ),
+                    CircleShape
+                )
+                .border(
+                    1.dp,
+                    Color.White.copy(alpha = 0.2f + shimmer * 0.1f),
+                    CircleShape
+                )
+                .clickable { onClick() },
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(iconRes),
+                contentDescription = null,
+                tint = Color.White.copy(alpha = 0.9f),
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+
+    @Composable
+    private fun RainbowText(
+        text: String,
+        fontSize: Float,
+        fontWeight: FontWeight = FontWeight.Normal
+    ) {
+        val transition = rememberInfiniteTransition()
+        val phase by transition.animateFloat(
+            initialValue = 0f,
+            targetValue = 360f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(3000, easing = LinearEasing)
+            )
         )
 
-        val colors = List(7) { i ->
-            val hue = (i * 360 / 7 + (phase * 180 / PI).toInt()) % 360
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
-            Color.hsv(hue.toFloat(), 1f, 1f)
+        val colors = List(10) { i ->
+            val hue = (i * 36 + phase) % 360
+            Color.hsv(hue, 0.85f, 1f)
         }
 
         Text(
             text = text,
             style = TextStyle(
-<<<<<<< HEAD
-                fontSize = fontSize.sp, // Fixed: Convert Float to TextUnit.Sp
-=======
                 fontSize = fontSize.sp,
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
-                brush = Brush.horizontalGradient(colors)
+                fontWeight = fontWeight,
+                brush = Brush.linearGradient(colors)
             )
         )
     }
 
-<<<<<<< HEAD
-    @Composable
-    private fun ConfigCategoryContent() {
-        // Configuration content placeholder
-    }
-}
-=======
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun SettingsPageContent() {
+    fun CompactSettingsContent() {
         val context = LocalContext.current
         val snackbarHostState = remember { SnackbarHostState() }
         val coroutineScope = rememberCoroutineScope()
@@ -331,56 +454,104 @@ class OverlayClickGUI : OverlayWindow() {
             }
         }
 
-        Scaffold(
-            containerColor = Color(0xFF151515),
-            snackbarHost = { SnackbarHost(snackbarHostState) }
-        ) { padding ->
-            Column(
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            // Premium Header
+            Box(
                 modifier = Modifier
-                    .padding(padding)
+                    .fillMaxWidth()
+                    .background(
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0x20FF0080),
+                                Color(0x2000FF80),
+                                Color(0x208000FF)
+                            )
+                        ),
+                        RoundedCornerShape(12.dp)
+                    )
+                    .border(1.dp, Color.White.copy(0.15f), RoundedCornerShape(12.dp))
                     .padding(16.dp)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                Text("Configuration", color = Color.White, fontSize = 22.sp)
-                Text(
-                    text = "Manage your WClient configurations with ease. Import your favorite setup or export your current state.",
-                    color = Color(0xFFAAAAAA),
-                    fontSize = 14.sp
-                )
-
-                ElevatedCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.extraLarge,
-                    elevation = CardDefaults.elevatedCardElevation(8.dp),
-                    colors = CardDefaults.elevatedCardColors(containerColor = Color(0xFF202020))
-                ) {
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        ElevatedButton(
-                            onClick = { filePickerLauncher.launch("application/json") },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(Icons.Rounded.Upload, contentDescription = null)
-                            Spacer(Modifier.width(10.dp))
-                            Text("Import Config")
-                        }
-
-                        ElevatedButton(
-                            onClick = { showFileNameDialog = true },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(Icons.Rounded.SaveAlt, contentDescription = null)
-                            Spacer(Modifier.width(10.dp))
-                            Text("Export Config")
-                        }
+                        Icon(
+                            Icons.Rounded.Settings,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            "Configuration",
+                            color = Color.White,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
+                    Text(
+                        "Manage your WClient configurations",
+                        color = Color(0xFFBBBBBB),
+                        fontSize = 12.sp
+                    )
+                }
+            }
+
+            // Config Actions Grid
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                item {
+                    PremiumActionCard(
+                        title = "Import Config",
+                        description = "Load configuration",
+                        icon = Icons.Rounded.Upload,
+                        onClick = { filePickerLauncher.launch("application/json") }
+                    )
+                }
+                item {
+                    PremiumActionCard(
+                        title = "Export Config",
+                        description = "Save configuration",
+                        icon = Icons.Rounded.SaveAlt,
+                        onClick = { showFileNameDialog = true }
+                    )
+                }
+                item {
+                    PremiumActionCard(
+                        title = "Reset Config",
+                        description = "Restore defaults",
+                        icon = Icons.Rounded.Refresh,
+                        onClick = { /* Reset logic */ }
+                    )
+                }
+                item {
+                    PremiumActionCard(
+                        title = "Backup Config",
+                        description = "Create backup",
+                        icon = Icons.Rounded.BackupTable,
+                        onClick = { /* Backup logic */ }
+                    )
                 }
             }
         }
 
+        // Snackbar Host
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            SnackbarHost(snackbarHostState)
+        }
+
+        // Export Dialog
         if (showFileNameDialog) {
             AlertDialog(
                 onDismissRequest = { showFileNameDialog = false },
@@ -398,29 +569,156 @@ class OverlayClickGUI : OverlayWindow() {
 
                         showFileNameDialog = false
                     }) {
-                        Text("Export")
+                        Text("Export", color = Color(0xFF00FF88))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showFileNameDialog = false }) {
-                        Text("Cancel")
+                        Text("Cancel", color = Color.White.copy(alpha = 0.7f))
                     }
                 },
-                title = { Text("Export Config", color = Color.White) },
+                title = {
+                    Text("Export Config", color = Color.White, fontWeight = FontWeight.Bold)
+                },
                 text = {
                     OutlinedTextField(
                         value = configFileName,
                         onValueChange = { configFileName = it },
-                        label = { Text("File name", color = Color.White) },
-                        placeholder = { Text("e.g., my_config.json") },
+                        label = { Text("File name", color = Color.White.copy(alpha = 0.7f)) },
+                        placeholder = { Text("e.g., my_config.json", color = Color.White.copy(alpha = 0.5f)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        singleLine = true
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFF00FF88),
+                            unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White
+                        )
                     )
                 },
-                containerColor = Color(0xFF1E1E1E),
+                containerColor = Color(0xFF1A1A1A),
                 textContentColor = Color.White
             )
         }
     }
+
+    @Composable
+    private fun PremiumActionCard(
+        title: String,
+        description: String,
+        icon: androidx.compose.ui.graphics.vector.ImageVector,
+        onClick: () -> Unit
+    ) {
+        Card(
+            onClick = onClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.Transparent
+            ),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0x25FFFFFF),
+                                Color(0x15FFFFFF)
+                            )
+                        ),
+                        RoundedCornerShape(12.dp)
+                    )
+                    .border(
+                        1.dp,
+                        Color.White.copy(alpha = 0.15f),
+                        RoundedCornerShape(12.dp)
+                    )
+                    .padding(12.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(36.dp)
+                            .background(
+                                Brush.radialGradient(
+                                    colors = listOf(
+                                        Color(0x40FF0080),
+                                        Color(0x4000FF80)
+                                    )
+                                ),
+                                CircleShape
+                            )
+                            .border(1.dp, Color.White.copy(0.2f), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+
+                    Column {
+                        Text(
+                            text = title,
+                            color = Color.White,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = description,
+                            color = Color.White.copy(alpha = 0.7f),
+                            fontSize = 10.sp
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    // Enhanced RGB Animated Border Modifier
+    @Composable
+    private fun Modifier.rgbBorder(): Modifier {
+        val transition = rememberInfiniteTransition()
+        val phase by transition.animateFloat(
+            initialValue = 0f,
+            targetValue = 360f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(2500, easing = LinearEasing)
+            )
+        )
+
+        return this.drawBehind {
+            val strokeWidth = 4.dp.toPx()
+            val radius = 20.dp.toPx()
+
+            // Create enhanced gradient colors with more vibrant transitions
+            val colors = listOf(
+                Color.hsv((phase) % 360f, 0.9f, 1f),
+                Color.hsv((phase + 45) % 360f, 0.85f, 1f),
+                Color.hsv((phase + 90) % 360f, 0.9f, 1f),
+                Color.hsv((phase + 135) % 360f, 0.85f, 1f),
+                Color.hsv((phase + 180) % 360f, 0.9f, 1f),
+                Color.hsv((phase + 225) % 360f, 0.85f, 1f),
+                Color.hsv((phase + 270) % 360f, 0.9f, 1f),
+                Color.hsv((phase + 315) % 360f, 0.85f, 1f),
+                Color.hsv((phase) % 360f, 0.9f, 1f)
+            )
+
+            val brush = Brush.sweepGradient(colors)
+
+            drawRoundRect(
+                brush = brush,
+                style = Stroke(width = strokeWidth),
+                cornerRadius = CornerRadius(radius)
+            )
+        }
+    }
 }
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c

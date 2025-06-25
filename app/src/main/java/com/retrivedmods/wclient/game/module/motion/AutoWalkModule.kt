@@ -12,19 +12,19 @@ import kotlin.math.sin
 
 class AutoWalkModule : Module("auto_walk", ModuleCategory.Motion) {
 
-    private val speed = 0.5f  // Walking speed
-    private var lastJumpTime = System.currentTimeMillis()  // Track time for periodic jumps
-    private var isJumping = false  // Flag to track if the player is mid-jump
-    private var disableYAxis = false  // Flag to disable Y-axis motion and allow gravity
+    private val speed = 0.5f
+    private var lastJumpTime = System.currentTimeMillis()
+    private var isJumping = false
+    private var disableYAxis = false
 
     init {
-        // Start a timer to periodically apply the jump effect every 2 seconds if the module is enabled
+
         timer(period = 2000) {
-            if (isEnabled) {  // Only apply jump if the module is enabled
-                // Check if it's time to apply a jump every 2 seconds
+            if (isEnabled) {
+
                 if (System.currentTimeMillis() - lastJumpTime >= 2000) {
-                    lastJumpTime = System.currentTimeMillis()  // Reset the jump timer
-                    applyJump()  // Apply a slight jump
+                    lastJumpTime = System.currentTimeMillis()
+                    applyJump()
                 }
             }
         }
@@ -36,28 +36,27 @@ class AutoWalkModule : Module("auto_walk", ModuleCategory.Motion) {
         }
 
         val packet = interceptablePacket.packet
-        if (packet is PlayerAuthInputPacket) {  // Only execute if the module is enabled
-            // Call the function to control X and Z axis if module is enabled
+        if (packet is PlayerAuthInputPacket) {
             controlXZMovement(packet)
 
-            // Call the function to control Y axis (jump) if module is enabled
+
             if (!disableYAxis) {
-                controlYMovement()  // Apply upward motion if needed
+                controlYMovement()
             }
         }
     }
 
-    // Function to control X and Z movement based on the player's look direction
-    private fun controlXZMovement(packet: PlayerAuthInputPacket) {
-        // Convert angles to radians (use Float for the calculations)
-        val yaw = Math.toRadians(packet.rotation.y.toDouble())
-            .toFloat()  // Horizontal direction (left/right)
-        val pitch =
-            Math.toRadians(packet.rotation.x.toDouble()).toFloat()  // Vertical direction (up/down)
 
-        // Calculate direction vector based on the player's look direction
-        val motionX = -sin(yaw) * cos(pitch) * speed  // Movement along X (forward/backward)
-        val motionZ = cos(yaw) * cos(pitch) * speed  // Movement along Z (forward/backward)
+    private fun controlXZMovement(packet: PlayerAuthInputPacket) {
+
+        val yaw = Math.toRadians(packet.rotation.y.toDouble())
+            .toFloat()
+        val pitch =
+            Math.toRadians(packet.rotation.x.toDouble()).toFloat()
+
+
+        val motionX = -sin(yaw) * cos(pitch) * speed
+        val motionZ = cos(yaw) * cos(pitch) * speed
 
         // Send the updated packet for movement input
         val motionPacket = SetEntityMotionPacket().apply {

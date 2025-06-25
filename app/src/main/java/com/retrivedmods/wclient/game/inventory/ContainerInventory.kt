@@ -12,28 +12,6 @@ import org.cloudburstmc.protocol.bedrock.packet.InventoryTransactionPacket
 class ContainerInventory(containerId: Int, val type: ContainerType) :
     AbstractInventory(containerId) {
 
-<<<<<<< HEAD
-    override var content = emptyArray<ItemData>()
-
-    fun onPacketBound(packet: BedrockPacket) {
-        if (packet is InventoryTransactionPacket) {
-            packet.actions.filter {
-                it is InventoryActionData &&
-                        it.source.type == InventorySource.Type.CONTAINER &&
-                        it.source.containerId == containerId
-            }.forEach {
-                content[it.slot] = it.toItem
-            }
-        }
-        if (packet is InventoryContentPacket && packet.containerId == containerId) {
-            content = packet.contents.toTypedArray()
-        } else if (packet is InventorySlotPacket && packet.containerId == containerId) {
-            content[packet.slot] = packet.item
-        }
-    }
-
-}
-=======
     override var content: Array<ItemData> = when (type) {
         ContainerType.CONTAINER -> Array(27) { ItemData.AIR }
         ContainerType.HOPPER -> Array(5) { ItemData.AIR }
@@ -67,4 +45,3 @@ class ContainerInventory(containerId: Int, val type: ContainerType) :
         }
     }
 }
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c

@@ -15,20 +15,6 @@ import kotlin.math.ceil
 import kotlin.math.sqrt
 
 class PlayerTracerModule : Module("player_tracer", ModuleCategory.Misc) {
-<<<<<<< HEAD
-    // Store player info by entityId
-    private val playersInfo = mutableMapOf<Long, PlayerInfo>()
-    private var playerPosition = Vector3f.from(0f, 0f, 0f)
-
-    // Store previous positions and timestamps to calculate velocity
-    private val previousPositions = mutableMapOf<Long, Vector3f>()
-    private val previousTimestamps = mutableMapOf<Long, Long>()
-
-    // Define a constant for the scan radius (in blocks)
-    private val scanRadius = intValue("scanRadius", 500, 100..100000)
-
-    // Data class to hold player information
-=======
 
     private val playersInfo = mutableMapOf<Long, PlayerInfo>()
     private var playerPosition = Vector3f.from(0f, 0f, 0f)
@@ -41,7 +27,6 @@ class PlayerTracerModule : Module("player_tracer", ModuleCategory.Misc) {
     private val scanRadius = intValue("scanRadius", 500, 100..100000)
 
 
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
     data class PlayerInfo(
         val entityId: Long,
         val name: String,
@@ -51,11 +36,7 @@ class PlayerTracerModule : Module("player_tracer", ModuleCategory.Misc) {
         val skin: SerializedSkin
     )
 
-<<<<<<< HEAD
-    // Function to calculate velocity
-=======
 
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
     private fun calculateVelocity(
         entityId: Long,
         currentPosition: Vector3f,
@@ -67,11 +48,7 @@ class PlayerTracerModule : Module("player_tracer", ModuleCategory.Misc) {
         return if (previousPosition != null && previousTimestamp != null) {
             val timeDelta = currentTime - previousTimestamp
             if (timeDelta > 0) {
-<<<<<<< HEAD
-                // Calculate velocity: (current position - previous position) / time
-=======
 
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
                 val velocity = Vector3f.from(
                     (currentPosition.x - previousPosition.x) / timeDelta,
                     (currentPosition.y - previousPosition.y) / timeDelta,
@@ -86,21 +63,13 @@ class PlayerTracerModule : Module("player_tracer", ModuleCategory.Misc) {
         }
     }
 
-<<<<<<< HEAD
-    // Function to update the last known position and timestamp
-=======
 
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
     private fun updatePositionAndTimestamp(entityId: Long, currentPosition: Vector3f) {
         val currentTime = System.currentTimeMillis()
         previousPositions[entityId] = currentPosition
         previousTimestamps[entityId] = currentTime
     }
 
-<<<<<<< HEAD
-    // Function to send a message with detailed information
-=======
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
     private fun sendMessage(
         playerInfo: PlayerInfo,
         entityPosition: Vector3f,
@@ -132,27 +101,16 @@ class PlayerTracerModule : Module("player_tracer", ModuleCategory.Misc) {
             sourceName = ""
         }
 
-<<<<<<< HEAD
-        session.clientBound(textPacket) // Ensure session is properly initialized
-    }
-
-    // Handle incoming packets
-=======
         session.clientBound(textPacket)
     }
 
 
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
     override fun beforePacketBound(interceptablePacket: InterceptablePacket) {
         if (!isEnabled) {
             return
         }
 
-<<<<<<< HEAD
-        // Process PlayerListPacket to store player information
-=======
 
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
         val packet = interceptablePacket.packet
         if (packet is PlayerListPacket) {
             packet.entries.forEach { entry ->
@@ -167,44 +125,17 @@ class PlayerTracerModule : Module("player_tracer", ModuleCategory.Misc) {
             }
         }
 
-<<<<<<< HEAD
-        // Process PlayerAuthInputPacket to get our player's position
-=======
 
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
         if (packet is PlayerAuthInputPacket) {
             playerPosition = packet.position
         }
 
-<<<<<<< HEAD
-        // Process MoveEntityAbsolutePacket to get position info for other entities
-=======
 
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
         if (packet is MoveEntityAbsolutePacket) {
             val entityId = packet.runtimeEntityId
             val entityPosition = packet.position
             val currentTime = System.currentTimeMillis()
 
-<<<<<<< HEAD
-            // Update last known position and timestamp
-            updatePositionAndTimestamp(entityId, entityPosition)
-
-            // Calculate velocity for the entity
-            val velocity = calculateVelocity(entityId, entityPosition, currentTime)
-
-            // Check if the entityId matches any stored player info
-            val storedPlayerInfo = playersInfo[entityId]
-            if (storedPlayerInfo != null) {
-                // Calculate the distance between our player and the other player
-                val distance = calculateDistance(playerPosition, entityPosition)
-
-                // Only send the message if the entity is within the scan radius
-                if (distance <= scanRadius.value.toFloat()) {
-                    val direction = getCompassDirection(playerPosition, entityPosition)
-
-                    // Send message with player info, entityId, position, and distance
-=======
 
             updatePositionAndTimestamp(entityId, entityPosition)
 
@@ -221,7 +152,6 @@ class PlayerTracerModule : Module("player_tracer", ModuleCategory.Misc) {
                     val direction = getCompassDirection(playerPosition, entityPosition)
 
 
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
                     sendMessage(
                         storedPlayerInfo,
                         entityPosition,
@@ -235,11 +165,7 @@ class PlayerTracerModule : Module("player_tracer", ModuleCategory.Misc) {
         }
     }
 
-<<<<<<< HEAD
-    // Calculate Euclidean distance
-=======
 
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
     private fun calculateDistance(from: Vector3f, to: Vector3f): Float {
         val dx = from.x - to.x
         val dy = from.y - to.y
@@ -247,11 +173,7 @@ class PlayerTracerModule : Module("player_tracer", ModuleCategory.Misc) {
         return sqrt((dx * dx + dy * dy + dz * dz).toDouble()).toFloat()
     }
 
-<<<<<<< HEAD
-    // Convert position to rounded-up string format
-=======
 
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
     private fun Vector3f.roundUpCoordinates(): String {
         val roundedX = ceil(this.x).toInt()
         val roundedY = ceil(this.y).toInt()
@@ -259,11 +181,7 @@ class PlayerTracerModule : Module("player_tracer", ModuleCategory.Misc) {
         return "$roundedX, $roundedY, $roundedZ"
     }
 
-<<<<<<< HEAD
-    // Determine the 16-direction compass heading
-=======
 
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
     private fun getCompassDirection(from: Vector3f, to: Vector3f): String {
         val dx = to.x - from.x
         val dz = to.z - from.z

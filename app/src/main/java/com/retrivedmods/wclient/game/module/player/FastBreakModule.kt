@@ -9,7 +9,7 @@ import org.cloudburstmc.protocol.bedrock.packet.PlayerAuthInputPacket
 
 class FastBreakModule : Module("haste", ModuleCategory.Player) {
 
-    private val amplifierValue by floatValue("amplifier", 1f, 1f..5f)
+    private val amplifierValue by floatValue("amplifier", 1f, 1f..10f)
 
     override fun onDisabled() {
         super.onDisabled()

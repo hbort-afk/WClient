@@ -1,17 +1,9 @@
 package com.retrivedmods.wclient.router.main
 
 import android.Manifest
-<<<<<<< HEAD
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.provider.OpenableColumns
-=======
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -40,22 +32,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
-<<<<<<< HEAD
-import androidx.compose.material.icons.rounded.AddPhotoAlternate
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.Insights
-import androidx.compose.material.icons.rounded.Pause
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Plumbing
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material.icons.rounded.Star
-import androidx.compose.material.icons.rounded.Stop
-import androidx.compose.material.icons.rounded.Upload
-=======
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
 import androidx.compose.material.icons.rounded.Whatshot
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BasicAlertDialog
@@ -63,10 +42,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-<<<<<<< HEAD
-import androidx.compose.material3.FilledTonalButton
-=======
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -106,12 +81,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-<<<<<<< HEAD
-
-
-import androidx.core.content.FileProvider
-=======
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -124,15 +93,9 @@ import com.retrivedmods.wclient.util.MinecraftUtils
 import com.retrivedmods.wclient.util.SnackbarHostStateScope
 import com.retrivedmods.wclient.viewmodel.MainScreenViewModel
 import kotlinx.coroutines.launch
-<<<<<<< HEAD
-import java.io.File
-=======
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
 import java.net.Inet4Address
 import java.net.NetworkInterface
-
-
-
+import androidx.core.net.toUri
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -222,6 +185,10 @@ fun HomePageContent() {
                 message = context.getString(R.string.backend_disconnected)
             )
         }
+
+
+
+
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -272,7 +239,7 @@ fun HomePageContent() {
                             overlayPermissionLauncher.launch(
                                 Intent(
                                     Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                    Uri.parse("package: ${context.packageName}")
+                                    "package: ${context.packageName}".toUri()
                                 )
                             )
                             return@FloatingActionButton
@@ -297,11 +264,7 @@ fun HomePageContent() {
                             )
                         } else {
                             Icon(
-<<<<<<< HEAD
-                            Icons.Rounded.Pause,
-=======
                                 Icons.Rounded.Pause,
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
                                 contentDescription = null
                             )
                         }
@@ -310,66 +273,6 @@ fun HomePageContent() {
             }
         }
 
-<<<<<<< HEAD
-if (showConnectionDialog) {
-    val ipAddress = remember {
-        runCatching {
-            NetworkInterface.getNetworkInterfaces().asSequence()
-                .flatMap { it.inetAddresses.asSequence() }
-                .filterIsInstance<Inet4Address>()
-                .firstOrNull { !it.isLoopbackAddress }
-                ?.hostAddress
-        }.getOrNull() ?: "127.0.0.1"
-    }
-
-    AlertDialog(
-        onDismissRequest = { showConnectionDialog = false },
-        title = {
-            Text(
-                "How to Connect",
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
-        text = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text("To join, go to Minecraft's Friends tab and join through LAN. If LAN doesn't show up, you can add a new server in the Servers tab by entering the IP address and port provided below, then press Play.")
-
-                Text(
-                    "IP Address:",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-                Text(
-                    ipAddress,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-
-                Text(
-                    "Port:",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-                Text(
-                    "19132",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = { showConnectionDialog = false }
-            ) {
-                Text("OK")
-            }
-        }
-    )
-}
-}
-=======
         if (showConnectionDialog) {
             val ipAddress = remember {
                 runCatching {
@@ -428,7 +331,6 @@ if (showConnectionDialog) {
             )
         }
     }
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
 }
 
 
@@ -498,52 +400,8 @@ private fun IntroductionCard() {
                 )
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                "Changelogs",
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
-            Text(
-                """
-<<<<<<< HEAD
-        - Fixed AdvanceCombatAura
-        - Added Rotation
-        - Added X Strafe
-        - LAN Problem Fixed
-        - Added Crystal Aura
-        - Added EPS (Not Stable)
-        - Added Criticals 
-        - Updated Crasher
-        - Added Blink
-        - Added AutoDisconnect
-        - Added OpFightBot
-        - Added FastStop
-        - Added AdvanceDisabler
-=======
-        - Added Criticals
-        - Added Tutorials
-        - Added Reach
-        - Added SmartAura
-        - Fixed JavaAura
-        - Improved EnemyHunter
-        - Improved OpFightBot
-        - Improved PlayerTP
-        - Added FastBreak
-        - Added FastEat
-        - Added Jesus
-        - Improved InfiniteAura
-        - Added FakeLag
-        - Simplified Categories
-        - Fixed Crash
-        - Optimized Client
->>>>>>> 9796d3532c2f1fd11b3767244b027d90deb1284c
-        - Use Below 1.21.60
-        """.trimIndent(),
-                style = MaterialTheme.typography.bodySmall.copy(
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
+
+
         }
 
     }
@@ -848,4 +706,7 @@ private fun GameCard() {
             }
         )
     }
+
 }
+
+

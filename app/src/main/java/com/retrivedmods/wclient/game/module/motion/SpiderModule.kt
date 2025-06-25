@@ -3,35 +3,38 @@ package com.retrivedmods.wclient.game.module.motion
 import com.retrivedmods.wclient.game.InterceptablePacket
 import com.retrivedmods.wclient.game.Module
 import com.retrivedmods.wclient.game.ModuleCategory
-import org.cloudburstmc.protocol.bedrock.packet.MovePlayerPacket
 import org.cloudburstmc.math.vector.Vector3f
+import org.cloudburstmc.protocol.bedrock.data.PlayerAuthInputData
+import org.cloudburstmc.protocol.bedrock.packet.PlayerAuthInputPacket
+import org.cloudburstmc.protocol.bedrock.packet.SetEntityMotionPacket
 
 class SpiderModule : Module("Spider", ModuleCategory.Motion) {
 
-    private var speedMultiplier by floatValue("SpeedMultiplier", 0.3f, 0.1f..1.5f)
-
+    private var climbSpeed by floatValue("Climb Speed", 0.6f, 0.1f..2.5f)
 
     override fun beforePacketBound(interceptablePacket: InterceptablePacket) {
         if (!isEnabled) return
 
         val packet = interceptablePacket.packet
-        if (packet !is MovePlayerPacket) return
+        if (packet is PlayerAuthInputPacket) {
+            val player = session.localPlayer
 
-        val player = session.localPlayer
-        val pos = player.vec3Position
 
-        if (isAgainstWall()) {
+            if (packet.inputData.contains(PlayerAuthInputData.HORIZONTAL_COLLISION)) {
 
-            val newY = pos.y + speedMultiplier
-            packet.position = Vector3f.from(pos.x, newY, pos.z)
-            packet.isOnGround = false
+                val shouldClimb = packet.inputData.contains(PlayerAuthInputData.JUMPING)
+
+                val motionY = if (shouldClimb) climbSpeed else 0.0f
+
+                session.clientBound(SetEntityMotionPacket().apply {
+                    runtimeEntityId = player.runtimeEntityId
+                    motion = Vector3f.from(
+                        player.motionX,
+                        motionY,
+                        player.motionZ
+                    )
+                })
+            }
         }
-    }
-
-
-    private fun isAgainstWall(): Boolean {
-        // TODO: Implement actual collision or raycast check here.
-
-        return true
     }
 }
