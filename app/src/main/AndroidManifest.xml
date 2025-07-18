@@ -28,7 +28,10 @@
 
         <activity
             android:name=".activity.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="landscape"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity">
+
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

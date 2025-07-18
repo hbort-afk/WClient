@@ -51,7 +51,7 @@ fun Watermark() {
                 baselineShift = BaselineShift.Superscript
             )
         ) {
-            append(" v9.0")
+            append(" v10.0")
         }
     }
 

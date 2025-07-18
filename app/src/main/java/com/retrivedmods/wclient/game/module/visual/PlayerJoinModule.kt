@@ -6,7 +6,7 @@ import com.retrivedmods.wclient.game.ModuleCategory
 import org.cloudburstmc.protocol.bedrock.packet.AddPlayerPacket
 import org.cloudburstmc.protocol.bedrock.packet.RemoveEntityPacket
 
-class PlayerJoinNotifierModule : Module("Player Logs", ModuleCategory.Visual) {
+class PlayerJoinModule : Module("PlayerJoin", ModuleCategory.Visual) {
 
     private val trackedPlayers = mutableMapOf<Long, String>()
 

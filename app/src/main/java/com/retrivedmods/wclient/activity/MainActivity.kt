@@ -6,9 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.runtime.*
 import com.retrivedmods.wclient.navigation.Navigation
+import com.retrivedmods.wclient.ui.component.LoadingScreen // ✅ use LoadingScreen
 import com.retrivedmods.wclient.ui.theme.MuCuteClientTheme
-
 
 class MainActivity : ComponentActivity() {
 
@@ -17,11 +18,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             MuCuteClientTheme {
-                Navigation()
+                var showLoading by remember { mutableStateOf(true) }
+
+
+                if (showLoading) {
+                    LoadingScreen(onDone = { showLoading = false })
+                } else {
+                    Navigation()
+                }
             }
         }
     }
-
 }

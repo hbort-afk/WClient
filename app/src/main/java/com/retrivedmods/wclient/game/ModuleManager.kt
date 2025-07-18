@@ -54,7 +54,8 @@ import com.retrivedmods.wclient.game.module.player.FastBreakModule
 import com.retrivedmods.wclient.game.module.player.JesusModule
 import com.retrivedmods.wclient.game.module.visual.NightVisionModule
 import com.retrivedmods.wclient.game.module.visual.FakeProxyModule
-import com.retrivedmods.wclient.game.module.visual.PlayerJoinNotifierModule
+import com.retrivedmods.wclient.game.module.visual.NameTagModule
+import com.retrivedmods.wclient.game.module.visual.PlayerJoinModule
 import com.retrivedmods.wclient.game.module.world.FakeLagModule
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -96,12 +97,13 @@ object ModuleManager {
             add(NightVisionModule())
             add(RegenerationModule())
             add(AutoDisconnectModule())
-            add(PlayerJoinNotifierModule())
+            add(PlayerJoinModule())
             add(HitboxModule())
             add(InfiniteAuraModule())
             add(EnemyHunterModule())
             add(CriticalsModule())
             add(FakeProxyModule())
+            add(NameTagModule())
             add(ReachModule())
             add(SmartAuraModule())
             add(PlayerTPModule())
@@ -124,6 +126,7 @@ object ModuleManager {
             add(MotionFlyModule())
             add(FreeCameraModule())
             add(KillauraModule())
+
 
 
             add(AntiCrystalModule())

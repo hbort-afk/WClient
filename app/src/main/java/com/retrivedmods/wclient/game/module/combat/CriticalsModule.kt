@@ -14,6 +14,7 @@ class CriticalsModule : Module("Criticals", ModuleCategory.Combat) {
     private var clientTickCounter = 0
     private var lastY = 0f
     private var lastJumpTime = 0L
+    private var jumpCooldownMs by intValue("JumpCooldownMs", 500, 100..2000)
 
     override fun beforePacketBound(interceptablePacket: InterceptablePacket) {
         if (!isEnabled) return
@@ -24,8 +25,7 @@ class CriticalsModule : Module("Criticals", ModuleCategory.Combat) {
         val now = System.currentTimeMillis()
 
         if (autoJump && isOnGround(player) && isTargetNearby()) {
-
-            if (now - lastJumpTime >= 500) {
+            if (now - lastJumpTime >= jumpCooldownMs) {
                 performJump(player)
                 lastJumpTime = now
             }
@@ -55,7 +55,8 @@ class CriticalsModule : Module("Criticals", ModuleCategory.Combat) {
 
     private fun isOnGround(player: Player): Boolean {
         val deltaY = player.vec3Position.y - lastY
-        return deltaY < 0.001f
+
+        return deltaY <= 0.001f
     }
 
     private fun isTargetNearby(): Boolean {

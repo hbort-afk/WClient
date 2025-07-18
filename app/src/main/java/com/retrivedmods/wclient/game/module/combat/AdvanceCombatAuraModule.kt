@@ -7,7 +7,8 @@ import com.retrivedmods.wclient.game.entity.*
 import org.cloudburstmc.math.vector.Vector3f
 import org.cloudburstmc.protocol.bedrock.packet.MovePlayerPacket
 import org.cloudburstmc.protocol.bedrock.packet.PlayerAuthInputPacket
-import kotlin.math.*
+import kotlin.math.cos
+import kotlin.math.sin
 
 class AdvanceCombatAuraModule : Module("AdvanceCombatAura", ModuleCategory.Combat) {
 
@@ -15,11 +16,12 @@ class AdvanceCombatAuraModule : Module("AdvanceCombatAura", ModuleCategory.Comba
     private var mobsOnly by boolValue("mobs_only", true)
     private var tpAuraEnabled by boolValue("tp_aura", true)
 
-    private var rangeValue by floatValue("range", 15.0f, 2f..25f)
-    private var cpsValue by intValue("cps", 40, 10..50)
+    private var rangeValue by floatValue("range", 7.0f, 2f..10f)
+    private var cpsValue by intValue("cps", 12, 5..20)
 
-    private var tpSpeed by intValue("tp_speed", 75, 10..2000)
+    private var tpSpeed by intValue("tp_speed", 150, 50..2000)
     private var tpYLevel by intValue("yOffset", 0, -10..10)
+
     private var distanceToKeep by floatValue("keep_distance", 2.0f, 1f..5f)
 
     private var lastAttackTime = 0L
@@ -34,12 +36,10 @@ class AdvanceCombatAuraModule : Module("AdvanceCombatAura", ModuleCategory.Comba
             val attackDelay = 1000L / cpsValue.coerceAtLeast(1)
 
             if ((currentTime - lastAttackTime) >= attackDelay) {
-                val targets = searchForClosestEntities().take(3)
-                if (targets.isEmpty()) return
+                val closestEntities = searchForClosestEntities()
+                if (closestEntities.isEmpty()) return
 
-                targets.forEach { entity ->
-                    rotateToward(entity)
-
+                closestEntities.forEach { entity ->
                     if (tpAuraEnabled && (currentTime - tpCooldown) >= tpSpeed) {
                         teleportTo(entity, distanceToKeep, tpYLevel)
                         tpCooldown = currentTime
@@ -52,56 +52,29 @@ class AdvanceCombatAuraModule : Module("AdvanceCombatAura", ModuleCategory.Comba
         }
     }
 
-    private fun rotateToward(entity: Entity) {
-        val player = session.localPlayer
-        val playerPos = player.vec3Position
-        val targetPos = entity.vec3Position
-
-        val dx = targetPos.x - playerPos.x
-        val dy = (targetPos.y + 1.5f) - (playerPos.y + 1.62f)
-        val dz = targetPos.z - playerPos.z
-
-        val distXZ = sqrt(dx * dx + dz * dz)
-        val yaw = Math.toDegrees(atan2(-dx, dz).toDouble()).toFloat()
-        val pitch = Math.toDegrees((-atan2(dy, distXZ)).toDouble()).toFloat()
-
-        val rotPacket = MovePlayerPacket().apply {
-            runtimeEntityId = player.runtimeEntityId
-            position = player.vec3Position
-            rotation = Vector3f.from(pitch, yaw, 0f)
-            mode = MovePlayerPacket.Mode.NORMAL
-            isOnGround = true
-            tick = player.tickExists
-        }
-
-        session.clientBound(rotPacket)
-    }
-
     private fun teleportTo(entity: Entity, distance: Float, yOffset: Int) {
-        val player = session.localPlayer
-        val target = entity.vec3Position
-
-        val yaw = Math.toRadians(entity.vec3Rotation.y.toDouble()).toFloat()
-        val direction = Vector3f.from(sin(yaw), 0f, -cos(yaw))
+        val targetPosition = entity.vec3Position
+        val targetYaw = Math.toRadians(entity.vec3Rotation.y.toDouble()).toFloat()
+        val direction = Vector3f.from(sin(targetYaw), 0f, -cos(targetYaw))
         val length = direction.length()
-        val normalized = if (length != 0f) Vector3f.from(direction.x / length, 0f, direction.z / length) else direction
+        val normalizedDirection = if (length != 0f) Vector3f.from(direction.x / length, 0f, direction.z / length) else direction
 
-        val newPos = Vector3f.from(
-            target.x + normalized.x * distance,
-            target.y + yOffset,
-            target.z + normalized.z * distance
+        val newPosition = Vector3f.from(
+            targetPosition.x + normalizedDirection.x * distance,
+            targetPosition.y + yOffset,
+            targetPosition.z + normalizedDirection.z * distance
         )
 
-        val move = MovePlayerPacket().apply {
-            runtimeEntityId = player.runtimeEntityId
-            position = newPos
+        val movePlayerPacket = MovePlayerPacket().apply {
+            runtimeEntityId = session.localPlayer.runtimeEntityId
+            position = newPosition
             rotation = entity.vec3Rotation
             mode = MovePlayerPacket.Mode.NORMAL
             isOnGround = false
-            tick = player.tickExists
+            tick = session.localPlayer.tickExists
         }
 
-        session.clientBound(move)
+        session.clientBound(movePlayerPacket)
     }
 
     private fun Entity.isTarget(): Boolean {
@@ -119,8 +92,8 @@ class AdvanceCombatAuraModule : Module("AdvanceCombatAura", ModuleCategory.Comba
 
     private fun Player.isBot(): Boolean {
         if (this is LocalPlayer) return false
-        val info = session.level.playerMap[this.uuid] ?: return true
-        return info.name.isBlank()
+        val playerList = session.level.playerMap[this.uuid] ?: return true
+        return playerList.name.isBlank()
     }
 
     private fun searchForClosestEntities(): List<Entity> {

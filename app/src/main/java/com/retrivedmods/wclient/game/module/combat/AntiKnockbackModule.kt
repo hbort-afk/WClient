@@ -13,7 +13,9 @@ class AntiKnockbackModule : Module("AntiKnockback", ModuleCategory.Combat) {
 
         val packet = interceptablePacket.packet
         if (packet is SetEntityMotionPacket) {
+
             if (packet.runtimeEntityId == session.localPlayer.runtimeEntityId) {
+
                 packet.motion = Vector3f.ZERO
             }
         }
