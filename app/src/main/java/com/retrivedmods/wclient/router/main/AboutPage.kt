@@ -47,7 +47,7 @@ fun AboutPageContent() {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 InfoCard(title = "WClient") {
-                    Text("Version: 10.0", style = MaterialTheme.typography.bodyMedium)
+                    Text("Version: 11.0", style = MaterialTheme.typography.bodyMedium)
                     Text("Developer: RetrivedMods", style = MaterialTheme.typography.bodyMedium)
                 }
 

@@ -12,6 +12,7 @@ import com.retrivedmods.wclient.game.module.combat.TrollerModule
 import com.retrivedmods.wclient.game.module.combat.InfiniteAuraModule
 import com.retrivedmods.wclient.game.module.combat.AntiKnockbackModule
 import com.retrivedmods.wclient.game.module.combat.AutoHvHModule
+import com.retrivedmods.wclient.game.module.combat.BlinkStrikeModule
 import com.retrivedmods.wclient.game.module.combat.TriggerBotModule
 import com.retrivedmods.wclient.game.module.combat.CriticalsModule
 import com.retrivedmods.wclient.game.module.combat.CrystalauraModule
@@ -19,8 +20,10 @@ import com.retrivedmods.wclient.game.module.combat.EnemyHunterModule
 import com.retrivedmods.wclient.game.module.combat.KillauraModule
 import com.retrivedmods.wclient.game.module.combat.ReachModule
 import com.retrivedmods.wclient.game.module.combat.SmartAuraModule
+import com.retrivedmods.wclient.game.module.combat.VelocityBoostModule
 import com.retrivedmods.wclient.game.module.misc.AdvanceDisablerModule
 import com.retrivedmods.wclient.game.module.misc.AutoDisconnectModule
+import com.retrivedmods.wclient.game.module.misc.ChestStealerModule
 import com.retrivedmods.wclient.game.module.player.DesyncModule
 import com.retrivedmods.wclient.game.module.motion.NoClipModule
 import com.retrivedmods.wclient.game.module.misc.PlayerTracerModule
@@ -49,14 +52,17 @@ import com.retrivedmods.wclient.game.module.visual.NoHurtCameraModule
 import com.retrivedmods.wclient.game.module.visual.ZoomModule
 import com.retrivedmods.wclient.game.module.visual.DamageTextModule
 import com.retrivedmods.wclient.game.module.motion.PlayerTPModule
+import com.retrivedmods.wclient.game.module.motion.SlowFallingModule
 import com.retrivedmods.wclient.game.module.motion.SpiderModule
 import com.retrivedmods.wclient.game.module.player.FastBreakModule
 import com.retrivedmods.wclient.game.module.player.JesusModule
+import com.retrivedmods.wclient.game.module.player.StrengthModule
 import com.retrivedmods.wclient.game.module.visual.NightVisionModule
 import com.retrivedmods.wclient.game.module.visual.FakeProxyModule
 import com.retrivedmods.wclient.game.module.visual.NameTagModule
 import com.retrivedmods.wclient.game.module.visual.PlayerJoinModule
 import com.retrivedmods.wclient.game.module.world.FakeLagModule
+import com.retrivedmods.wclient.game.module.world.PingStatsModule
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
@@ -95,6 +101,7 @@ object ModuleManager {
             add(AdvanceDisablerModule())
             add(BlinkModule())
             add(NightVisionModule())
+            add(VelocityBoostModule())
             add(RegenerationModule())
             add(AutoDisconnectModule())
             add(PlayerJoinModule())
@@ -115,6 +122,11 @@ object ModuleManager {
             add(OpFightBotModule())
             add(FakeLagModule())
             add(FastBreakModule())
+            add(StrengthModule())
+            add(BlinkStrikeModule())
+            add(PingStatsModule())
+            add(ChestStealerModule())
+            add(SlowFallingModule())
 
             add(BhopModule())
             add(SprintModule())
