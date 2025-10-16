@@ -9,7 +9,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.cloudburstmc.math.vector.Vector3f
-// Правильные импорты для транзакций, которые мы уже исправили
+// Правильные импорты для транзакций
 import org.cloudburstmc.protocol.bedrock.data.inventory.ItemData
 import org.cloudburstmc.protocol.bedrock.data.inventory.transaction.InventoryActionData
 import org.cloudburstmc.protocol.bedrock.data.inventory.transaction.InventorySource
@@ -104,10 +104,10 @@ class AnomalousPacketTester : Module("AnomalousPacketTester", ModuleCategory.Mis
     private fun sendInvalidMovePacket() {
         try {
             val movePacket = MovePlayerPacket()
-            // <<< ПОБЕДА: Используем прямой доступ к свойствам, как в Kotlin
             movePacket.setRuntimeEntityId(session.localPlayer.runtimeEntityId)
             movePacket.setPosition(Vector3f.from(Double.NaN, 128.0, Double.POSITIVE_INFINITY))
-            movePacket.setRotation(session.localPlayer.rotation)
+            // <<< ПОБЕДА: Используем Vector3f.ZERO, так как rotation не важен для атаки
+            movePacket.setRotation(Vector3f.ZERO)
             movePacket.setMode(MovePlayerPacket.Mode.NORMAL)
             session.serverBound(movePacket)
         } catch (e: Exception) {
