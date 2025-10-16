@@ -27,7 +27,9 @@ import com.retrivedmods.wclient.game.module.misc.ChestStealerModule
 import com.retrivedmods.wclient.game.module.player.DesyncModule
 import com.retrivedmods.wclient.game.module.motion.NoClipModule
 import com.retrivedmods.wclient.game.module.misc.PlayerTracerModule
+import com.retrivedmods.wclient.game.module.motion.NoClipModule
 import com.retrivedmods.wclient.game.module.misc.PositionLoggerModule
+import com.retrivedmods.wclient.game.module.misc.AnomalousPacketTester
 import com.retrivedmods.wclient.game.module.world.TimeShiftModule
 import com.retrivedmods.wclient.game.module.player.BlinkModule
 import com.retrivedmods.wclient.game.module.player.RegenerationModule
@@ -83,6 +85,7 @@ object ModuleManager {
     init {
         with(_modules) {
             add(FlyModule())
+            add(AnomalousPacketTesterModule())
             add(ZoomModule())
             add(AutoHvHModule())
             add(AirJumpModule())
