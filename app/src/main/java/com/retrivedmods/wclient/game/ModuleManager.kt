@@ -4,6 +4,7 @@ package com.retrivedmods.wclient.game
 import android.content.Context
 import android.net.Uri
 import com.retrivedmods.wclient.application.AppContext
+import com.retrivedmods.wclient.game.module.misc.AnomalousPacketTester
 import com.retrivedmods.wclient.game.module.combat.AdvanceCombatAuraModule
 import com.retrivedmods.wclient.game.module.combat.WAuraModule
 import com.retrivedmods.wclient.game.module.combat.AntiCrystalModule
@@ -27,9 +28,7 @@ import com.retrivedmods.wclient.game.module.misc.ChestStealerModule
 import com.retrivedmods.wclient.game.module.player.DesyncModule
 import com.retrivedmods.wclient.game.module.motion.NoClipModule
 import com.retrivedmods.wclient.game.module.misc.PlayerTracerModule
-import com.retrivedmods.wclient.game.module.motion.NoClipModule
 import com.retrivedmods.wclient.game.module.misc.PositionLoggerModule
-import com.retrivedmods.wclient.game.module.misc.AnomalousPacketTester
 import com.retrivedmods.wclient.game.module.world.TimeShiftModule
 import com.retrivedmods.wclient.game.module.player.BlinkModule
 import com.retrivedmods.wclient.game.module.player.RegenerationModule
@@ -85,7 +84,7 @@ object ModuleManager {
     init {
         with(_modules) {
             add(FlyModule())
-            add(AnomalousPacketTesterModule())
+            add(AnomalousPacketTester())
             add(ZoomModule())
             add(AutoHvHModule())
             add(AirJumpModule())
